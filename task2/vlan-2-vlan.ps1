@@ -1,30 +1,54 @@
 ﻿Login-AzureRmAccount 
+Set-AzureRmContext -SubscriptionId "b1d40bc1-2977-4394-b374-fe62498046e2" 
+
+#Get-AzureRmSubscription
 
 $resourceGroup = New-AzureRmResourceGroup -Name task2ResourceGroup -Location "West Europe"
-$gatewaySubnet = New-AzureRmVirtualNetworkSubnetConfig -Name task2Gateway -AddressPrefix 192.168.100.0/28
+#Remove-AzureRmResourceGroup -Name task2ResourceGroup
 
-New-AzureRmVirtualNetwork -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2Vnet -AddressPrefix 192.168.0.0/16 -Subnet $gatewaySubnet -Location "West Europe"
 
-$getVnet = Get-AzureRmVirtualNetwork -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2Vnet
-$getSubnet = Get-AzureRmVirtualNetworkSubnetConfig -Name $gatewaySubnet.Name -VirtualNetwork $getVnet
-$publicIpInterface = New-AzureRmPublicIpAddress -Name task2IP -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -AllocationMethod Dynamic
-$ipconfig = New-AzureRmVirtualNetworkGatewayIpConfig -Name task2IPConfig -Subnet $gatewaySubnet -PrivateIpAddress $publicIpInterface
+$vnet1subnetConfiguration = New-AzureRmVirtualNetworkSubnetConfig -Name task2SubnetConfiguration -AddressPrefix 192.168.0.0/28
+#Remove-AzureRmVirtualNetworkSubnetConfig -Name $vnet1subnetConfiguration.Name
+$vnet2subnetConfiguration = New-AzureRmVirtualNetworkSubnetConfig -Name task2SubnetConfiguration -AddressPrefix 172.16.0.0/28
+#Remove-AzureRmVirtualNetworkSubnetConfig -Name $vnet2subnetConfiguration.Name
 
-New-AzureRmVirtualNetworkGateway -Name task2Gateway -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -IpConfigurations $ipconfig -GatewayType Vpn -VpnType RouteBased -EnableBgp $false -GatewaySku Standard
 
-$signerCert = New-SelfSignedCertificate -Type Custom -KeySpec Signature -Subject "CN=task2RootCertificate" -KeyExportPolicy Exportable -HashAlgorithm sha256 -KeyLength 2048 -CertStoreLocation "Cert:\CurrentUser\My" -KeyUsageProperty Sign -KeyUsage CertSign
-New-SelfSignedCertificate -Type Custom -KeySpec Signature -Subject "CN=task2ClientCertificate" -KeyExportPolicy Exportable -HashAlgorithm sha256 -KeyLength 2048 -CertStoreLocation "Cert:\CurrentUser\My" -Signer $signerCert -TextExtension @("2.5.29.39={text}1.3.6.1.5.5.7.3.2")
+New-AzureRmVirtualNetwork -Name task2vnet1 -ResourceGroupName $resourceGroup.ResourceGroupName -AddressPrefix 192.168.0.0/24 -Subnet $vnet1subnetConfiguration -Location "West Europe"
+$getVnet1 = Get-AzureRmVirtualNetwork -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2vnet1
+New-AzureRmVirtualNetwork -Name task2vnet2 -ResourceGroupName $resourceGroup.ResourceGroupName -AddressPrefix 172.16.0.0/24 -Subnet $vnet2subnetConfiguration -Location "West Europe"
+$getVnet2 = Get-AzureRmVirtualNetwork -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2vnet2
+#Remove-AzureRmVirtualNetwork -Name $vnet1.Name
+#Remove-AzureRmVirtualNetwork -Name $vnet2.Name
+$getSubnetConfiguration1 = Get-AzureRmVirtualNetworkSubnetConfig -Name $vnet1subnetConfiguration.Name -VirtualNetwork $getVnet1
+$getSubnetConfiguration2 = Get-AzureRmVirtualNetworkSubnetConfig -Name $vnet2subnetConfiguration.Name -VirtualNetwork $getVnet2
 
-$rootCertificateName = "task2RootCert.cer"
-$certificateFilePath = "C:\task2RootCert.cer"
-$certificate = New-Object System.Security.Cryptography.X509Certificate2($certificateFilePath)
-$certificateConvertToBase64 = [system.convert]::ToBase64String($cert.RawData)
 
-$getGatewaySubnet = Get-AzureRmVirtualNetworkGateway -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2Gateway
-$VPNClientIPPool = "172.16.201.0/24"
+$publicIpVlan1 = New-AzureRmPublicIpAddress -Name task2publIP1 -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -AllocationMethod Dynamic
+$publicIpVlan2 = New-AzureRmPublicIpAddress -Name task2publIP2 -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -AllocationMethod Dynamic
+#Remove-AzureRmPublicIpAddress -Name $publicIpVlan1.Name
+#Remove-AzureRmPublicIpAddress -Name $publicIpVlan2.Name
+$vpnIPconf1 = New-AzureRmVirtualNetworkGatewayIpConfig -Name task2vpnIPconf1 -Subnet $getSubnetConfiguration1 -PrivateIpAddress $publicIpVlan1
+$vpnIPconf2 = New-AzureRmVirtualNetworkGatewayIpConfig -Name task2vpnIPconf2 -Subnet $getSubnetConfiguration2 -PrivateIpAddress $publicIpVlan2
+#Remove-AzureRmVirtualNetworkGatewayIpConfig -Name $vpnIPconf1
+#Remove-AzureRmVirtualNetworkGatewayIpConfig -Name $vpnIPconf2
 
-$getGatewaySubnet.BgpSettings -$null
 
-Set-AzureRmVirtualNetworkGateway -VirtualNetworkGateway $getGatewaySubnet -VpnClientAddressPool $VPNClientIPPool 
-Add-AzureRmVpnClientRootCertificate -VpnClientRootCertificateName $rootCertificateName -VirtualNetworkGatewayName $getGatewaySubnet.Name -ResourceGroupName $resourceGroup.ResourceGroupName -PublicCertData $certificateConvertToBase64
-Get-AzureRmVpnClientPackage -ResourceGroupName $resourceGroup.ResourceGroupName -VirtualNetworkGatewayName $getGatewaySubnet.Name -ProcessorArchitecture Amd64
+New-AzureRmVirtualNetworkGateway -Name task2VPNgateway1 -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -IpConfigurations $vpnIPconf1 -GatewayType Vpn -VpnType RouteBased -EnableBgp $false -GatewaySku Standard
+New-AzureRmVirtualNetworkGateway -Name task2VPNgateway2 -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -IpConfigurations $vpnIPconf2 -GatewayType Vpn -VpnType RouteBased -EnableBgp $false -GatewaySku Standard
+$getVPNsubnet1 = Get-AzureRmVirtualNetworkGateway -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2VPNgateway1
+$getVPNsubnet2 = Get-AzureRmVirtualNetworkGateway -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2VPNgateway2
+#Remove-AzureRmVirtualNetworkGateway -Name $getVPNsubnet1.Name
+#Remove-AzureRmVirtualNetworkGateway -Name $getVPNsubnet2.Name
+$getVPNsubnet1.BgpSettings -$null
+$getVPNsubnet2.BgpSettings -$null
+
+
+New-AzureRmVirtualNetworkGatewayConnection -Name task2connection1to2 -ResourceGroupName $resourceGroup.ResourceGroupName -VirtualNetworkGateway1 $getVPNsubnet1 -VirtualNetworkGateway2 $getVPNsubnet2 -Location "West Europe" -ConnectionType Vnet2Vnet -SharedKey 'zaq123'
+New-AzureRmVirtualNetworkGatewayConnection -Name task2connection2to1 -ResourceGroupName $resourceGroup.ResourceGroupName -VirtualNetworkGateway1 $getVPNsubnet2 -VirtualNetworkGateway2 $getVPNsubnet1 -Location "West Europe" -ConnectionType Vnet2Vnet -SharedKey 'zaq123'
+#Remove-AzureRmVirtualNetworkGatewayConnection -Name task2connection1to2
+#Remove-AzureRmVirtualNetworkGatewayConnection -Name task2connection2to1
+
+
+#Set-AzureRmVirtualNetworkGateway -VirtualNetworkGateway $getGatewaySubnet -VpnClientAddressPool $VPNClientIPPool 
+#Add-AzureRmVpnClientRootCertificate -VpnClientRootCertificateName $rootCertificateName -VirtualNetworkGatewayName $getGatewaySubnet.Name -ResourceGroupName $resourceGroup.ResourceGroupName -PublicCertData $certificateConvertToBase64
+#Get-AzureRmVpnClientPackage -ResourceGroupName $resourceGroup.ResourceGroupName -VirtualNetworkGatewayName $getGatewaySubnet.Name -ProcessorArchitecture Amd64
