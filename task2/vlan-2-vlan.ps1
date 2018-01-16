@@ -47,8 +47,3 @@ New-AzureRmVirtualNetworkGatewayConnection -Name task2connection1to2 -ResourceGr
 New-AzureRmVirtualNetworkGatewayConnection -Name task2connection2to1 -ResourceGroupName $resourceGroup.ResourceGroupName -VirtualNetworkGateway1 $getVPNsubnet2 -VirtualNetworkGateway2 $getVPNsubnet1 -Location "West Europe" -ConnectionType Vnet2Vnet -SharedKey 'zaq123'
 #Remove-AzureRmVirtualNetworkGatewayConnection -Name task2connection1to2
 #Remove-AzureRmVirtualNetworkGatewayConnection -Name task2connection2to1
-
-
-#Set-AzureRmVirtualNetworkGateway -VirtualNetworkGateway $getGatewaySubnet -VpnClientAddressPool $VPNClientIPPool 
-#Add-AzureRmVpnClientRootCertificate -VpnClientRootCertificateName $rootCertificateName -VirtualNetworkGatewayName $getGatewaySubnet.Name -ResourceGroupName $resourceGroup.ResourceGroupName -PublicCertData $certificateConvertToBase64
-#Get-AzureRmVpnClientPackage -ResourceGroupName $resourceGroup.ResourceGroupName -VirtualNetworkGatewayName $getGatewaySubnet.Name -ProcessorArchitecture Amd64
