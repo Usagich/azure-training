@@ -7,11 +7,6 @@ $resourceGroup = New-AzureRmResourceGroup -Name task2ResourceGroup -Location "We
 #Remove-AzureRmResourceGroup -Name task2ResourceGroup
 
 
-##$vnet1subnetConfiguration = New-AzureRmVirtualNetworkSubnetConfig -Name task2SubnetConfiguration -AddressPrefix 192.168.0.0/28
-###Remove-AzureRmVirtualNetworkSubnetConfig -Name $vnet1subnetConfiguration.Name
-##$vnet2subnetConfiguration = New-AzureRmVirtualNetworkSubnetConfig -Name task2SubnetConfiguration -AddressPrefix 172.16.0.0/28
-###Remove-AzureRmVirtualNetworkSubnetConfig -Name $vnet2subnetConfiguration.Name
-
 $vnet1GatewaySubnetConfiguration = New-AzureRmVirtualNetworkSubnetConfig -Name GatewaySubnet -AddressPrefix 192.168.0.0/28
 #Remove-AzureRmVirtualNetworkSubnetConfig -Name $vnet1GatewaySubnetConfiguration.Name
 $vnet2GatewaySubnetConfiguration = New-AzureRmVirtualNetworkSubnetConfig -Name GatewaySubnet -AddressPrefix 172.16.0.0/28
@@ -32,8 +27,8 @@ $publicIpVlan1 = New-AzureRmPublicIpAddress -Name task2publIP1 -ResourceGroupNam
 $publicIpVlan2 = New-AzureRmPublicIpAddress -Name task2publIP2 -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -AllocationMethod Dynamic
 #Remove-AzureRmPublicIpAddress -Name $publicIpVlan1.Name
 #Remove-AzureRmPublicIpAddress -Name $publicIpVlan2.Name
-$vpnIPconf1 = New-AzureRmVirtualNetworkGatewayIpConfig -Name task2vpnIPconf1 -Subnet $getSubnetConfiguration1 -PrivateIpAddress $publicIpVlan1
-$vpnIPconf2 = New-AzureRmVirtualNetworkGatewayIpConfig -Name task2vpnIPconf2 -Subnet $getSubnetConfiguration2 -PrivateIpAddress $publicIpVlan2
+$vpnIPconf1 = New-AzureRmVirtualNetworkGatewayIpConfig -Name task2vpnIPconf1 -Subnet $getSubnetConfiguration1 -PublicIpAddress $publicIpVlan1
+$vpnIPconf2 = New-AzureRmVirtualNetworkGatewayIpConfig -Name task2vpnIPconf2 -Subnet $getSubnetConfiguration2 -PublicIpAddress $publicIpVlan2
 #Remove-AzureRmVirtualNetworkGatewayIpConfig -Name $vpnIPconf1
 #Remove-AzureRmVirtualNetworkGatewayIpConfig -Name $vpnIPconf2
 
@@ -41,10 +36,10 @@ New-AzureRmVirtualNetworkGateway -Name task2VPNgateway1 -ResourceGroupName $reso
 New-AzureRmVirtualNetworkGateway -Name task2VPNgateway2 -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -IpConfigurations $vpnIPconf2 -GatewayType Vpn -VpnType RouteBased -EnableBgp $false -GatewaySku Standard
 $getVPNsubnet1 = Get-AzureRmVirtualNetworkGateway -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2VPNgateway1
 $getVPNsubnet2 = Get-AzureRmVirtualNetworkGateway -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2VPNgateway2
-#Remove-AzureRmVirtualNetworkGateway -Name $getVPNsubnet1.Name
-#Remove-AzureRmVirtualNetworkGateway -Name $getVPNsubnet2.Name
 $getVPNsubnet1.BgpSettings -$null
 $getVPNsubnet2.BgpSettings -$null
+#Remove-AzureRmVirtualNetworkGateway -Name $getVPNsubnet1.Name
+#Remove-AzureRmVirtualNetworkGateway -Name $getVPNsubnet2.Name
 
 
 New-AzureRmVirtualNetworkGatewayConnection -Name task2connection1to2 -ResourceGroupName $resourceGroup.ResourceGroupName -VirtualNetworkGateway1 $getVPNsubnet1 -VirtualNetworkGateway2 $getVPNsubnet2 -Location "West Europe" -ConnectionType Vnet2Vnet -SharedKey 'zaq123'
