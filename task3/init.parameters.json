@@ -1,0 +1,17 @@
+"parameters": 
+{ 
+	"<parameterName>" : 
+	{ 
+		"type" : "<type-of-parameter-value>", 
+		"defaultValue": "<optional-default-value-of-parameter>", 
+		"allowedValues": [ "<optional-array-of-allowed-values>" ], 
+		"minValue": <optional-minimum-value-for-int-parameters>, 
+		"maxValue": <optional-maximum-value-for-int-parameters>, 
+		"minLength": <optional-minimum-length-for-string-secureString-array-parameters>, 
+		"maxLength": <optional-maximum-length-for-string-secureString-array-parameters>, 
+		"metadata": 
+		{ 
+			"description": "<optional-description-of-the parameter>" 
+		} 
+	} 
+}
