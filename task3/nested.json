@@ -1,0 +1,277 @@
+{
+ "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", 
+ "contentVersion": "0.1", 
+ "parameters": 
+ { 
+	"location": 
+	{
+        "type": "string"
+    },
+    "virtualMachineName": 
+	{
+        "type": "string"
+    },
+    "virtualMachineSize": 
+	{
+        "type": "string"
+    },
+    "adminUsername": 
+	{
+        "type": "string"
+    },
+    "virtualNetworkName": 
+	{
+        "type": "string"
+    },
+    "networkInterfaceName": 
+	{
+        "type": "string"
+    },
+    "networkSecurityGroupName": 
+	{
+        "type": "string"
+    },
+    "adminPassword": {
+        "type": "securestring"
+    },
+    "storageAccountName": 
+	{
+        "type": "string"
+    },
+    "storageAccountType": 
+	{
+        "type": "string"
+    },
+    "addressPrefix": 
+	{
+        "type": "string"
+    },
+    "publicIpAddressName": 
+	{
+        "type": "string"
+    },
+    "publicIpAddressType": 
+	{
+        "type": "string"
+    },
+    "publicIpAddressSku": 
+	{
+        "type": "string"
+    },
+	"frontendSubnetName":
+	{
+		"type": "string"
+	},
+	"frontendPrefix":
+	{
+		"type": "string"
+	},
+	"backendSubnetName":
+	{
+		"type": "string"
+	},
+	"backendPrefix":
+	{
+		"type": "string"
+	}
+ }, 
+ "variables": 
+ { 
+	"vnetId": "[resourceId('task3RG','Microsoft.Network/virtualNetworks', 'task3network')]",
+    "subnetRef": "[concat(variables('vnetId'), '/subnets/', 'frontend')]",
+ }, 
+ "resources": 
+ [ 
+	{
+		"name": "task3storaccou",
+		"type": "Microsoft.Storage/storageAccounts",
+		"apiVersion": "2016-01-01",
+		"sku": 
+		{
+			"name": "Standard_LRS"
+		},
+		"kind": "Storage",
+		"location": "West Europe",
+		"tags": {},
+		"properties": {}
+	},
+	{
+		"name": "task3network",
+		"apiVersion": "2017-08-01",
+        "type": "Microsoft.Network/virtualNetworks",
+		"location": "West Europe",
+        "properties": 
+		{
+            "addressSpace": 
+			{
+                "addressPrefixes": 
+				[
+                   "192.168.0.0/16"
+                ]
+            },
+                "subnets": [
+                    {
+                        "name": "frontend",
+                        "properties": 
+						{
+                            "addressPrefix": "192.168.100.0/24"
+                        }
+                    },
+					{
+						"name": "backend",
+                        "properties": 
+						{
+                            "addressPrefix": "192.168.200.0/24"
+                        }
+					}
+                ]
+            }
+	},
+	{
+		"name": "task3VM",
+        "type": "Microsoft.Compute/virtualMachines",
+        "apiVersion": "2016-04-30-preview",
+        "location": "West Europe",
+        "dependsOn": 
+		[
+            "[concat('Microsoft.Network/networkInterfaces/', 'task3networkInterface')]",
+            "[concat('Microsoft.Storage/storageAccounts/', 'task3storaccou')]"
+        ],
+        "properties": 
+		{
+            "osProfile": 
+			{
+                "computerName": "task3VM",
+                "adminUsername": "naliaksandra",
+                "adminPassword": "qqq111QQQ111",
+                "windowsConfiguration": 
+				{
+                    "provisionVmAgent": "true"
+                }
+            },
+            "hardwareProfile": 
+			{
+                "vmSize": "Basic_A1"
+            },
+            "storageProfile": 
+			{
+                "imageReference": 
+				{
+                    "publisher": "MicrosoftWindowsServer",
+                    "offer": "WindowsServer",
+                    "sku": "2016-Datacenter",
+                    "version": "latest"
+                },
+                "osDisk": 
+				{
+                    "createOption": "fromImage",
+                    "managedDisk": 
+					{
+                        "storageAccountType": "Standard_LRS"
+                    }
+                },
+                "dataDisks": []
+            },
+            "networkProfile": 
+			{
+                "networkInterfaces": 
+				[
+                    {
+                        "id": "[resourceId('Microsoft.Network/networkInterfaces', 'task3networkInterface')]"
+                    }
+                ]
+            },
+            "diagnosticsProfile": 
+			{
+                "bootDiagnostics": 
+				{
+                    "enabled": true,
+                    "storageUri": "[reference(resourceId('task3RG', 'Microsoft.Storage/storageAccounts', 'task3storaccou'), '2015-06-15').primaryEndpoints['blob']]"
+                }
+            }
+        }
+    },
+    {
+        "name": "task3networkInterface",
+        "type": "Microsoft.Network/networkInterfaces",
+        "apiVersion": "2016-09-01",
+        "location": "West Europe",
+        "dependsOn": 
+		[
+            "[concat('Microsoft.Network/virtualNetworks/', 'task3network')]",
+            "[concat('Microsoft.Network/publicIpAddresses/', 'task3publIP')]",
+            "[concat('Microsoft.Network/networkSecurityGroups/', 'task3networkSecurityGroup')]"
+        ],
+        "properties": 
+		{
+            "ipConfigurations": 
+			[
+                {
+                    "name": "ipconfig1",
+                    "properties": 
+					{
+                        "subnet": 
+						{
+							"id": "[variables('subnetRef')]"
+						},
+                        "privateIPAllocationMethod": "Dynamic",
+                        "publicIpAddress": 
+						{
+                            "id": "[resourceId('task3RG','Microsoft.Network/publicIpAddresses', 'task3publIP')]"
+                        }
+                    }
+                }
+            ],
+            "networkSecurityGroup": 
+			{
+                "id": "[resourceId('task3RG', 'Microsoft.Network/networkSecurityGroups', 'task3networkSecurityGroup')]"
+            }
+        }
+    },
+    {
+        "name": "task3publIP",
+        "type": "Microsoft.Network/publicIpAddresses",
+        "apiVersion": "2017-08-01",
+        "location": "West Europe",
+        "properties": 
+		{
+            "publicIpAllocationMethod": "Dynamic"
+        },
+        "sku": 
+		{
+            "name": "Basic"
+        }
+    },
+    {
+        "name": "task3networkSecurityGroup",
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "apiVersion": "2017-06-01",
+        "location": "West Europe",
+        "properties": 
+		{
+            "securityRules": 
+			[
+                {
+                    "name": "default-allow-rdp",
+                    "properties": 
+					{
+                        "priority": 1000,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "3389"
+                    }
+                }
+            ]
+        }
+    }
+
+ ], 
+ "outputs": 
+ { 
+ 
+ } 
+}

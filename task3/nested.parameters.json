@@ -1,0 +1,79 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "0.1",
+    "parameters": 
+	{
+        "location": 
+		{
+            "value": "West Europe"
+        },
+        "virtualMachineName": 
+		{
+            "value": "task3VM"
+        },
+        "virtualMachineSize": 
+		{
+            "value": "Basic_A1"
+        },
+        "adminUsername": 
+		{
+            "value": "naliaksandra"
+        },
+        "virtualNetworkName": 
+		{
+            "value": "task3vnet"
+        },
+        "networkInterfaceName": 
+		{
+            "value": "task3networkInterface"
+        },
+        "networkSecurityGroupName": 
+		{
+            "value": "task3securityGroup"
+        },
+        "adminPassword": 
+		{
+            "value": "qqq111QQQ111"
+        },
+        "diagnosticsStorageAccountName": 
+		{
+            "value": "task3storaccou"
+        },
+        "diagnosticsStorageAccountType": 
+		{
+            "value": "Standard_LRS"
+        },
+        "addressPrefix": 
+		{
+            "value": "192.168.0.0/16"
+        },
+        "publicIpAddressName": 
+		{
+            "value": "task3publicIP"
+        },
+        "publicIpAddressType": 
+		{
+            "value": "Dynamic"
+        },
+        "publicIpAddressSku": 
+		{
+            "value": "Basic"
+        },
+		"frontendSubnetName":
+		{
+			"value": "frontend"
+		},
+		"frontendPrefix":
+		{
+			"value": "192.168.100.0/24"
+		},
+		"backendSubnetName":
+		{
+			"value": "backend"
+		},
+		"backendPrefix":
+		{
+			"value": "192.168.200.0/24"
+		}
+    }
+}
