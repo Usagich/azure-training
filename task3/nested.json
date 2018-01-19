@@ -3,81 +3,10 @@
  "contentVersion": "0.1", 
  "parameters": 
  { 
-	"location": 
-	{
-        "type": "string"
-    },
-    "virtualMachineName": 
-	{
-        "type": "string"
-    },
-    "virtualMachineSize": 
-	{
-        "type": "string"
-    },
-    "adminUsername": 
-	{
-        "type": "string"
-    },
-    "virtualNetworkName": 
-	{
-        "type": "string"
-    },
-    "networkInterfaceName": 
-	{
-        "type": "string"
-    },
-    "networkSecurityGroupName": 
-	{
-        "type": "string"
-    },
-    "adminPassword": {
-        "type": "securestring"
-    },
-    "storageAccountName": 
-	{
-        "type": "string"
-    },
-    "storageAccountType": 
-	{
-        "type": "string"
-    },
-    "addressPrefix": 
-	{
-        "type": "string"
-    },
-    "publicIpAddressName": 
-	{
-        "type": "string"
-    },
-    "publicIpAddressType": 
-	{
-        "type": "string"
-    },
-    "publicIpAddressSku": 
-	{
-        "type": "string"
-    },
-	"frontendSubnetName":
-	{
-		"type": "string"
-	},
-	"frontendPrefix":
-	{
-		"type": "string"
-	},
-	"backendSubnetName":
-	{
-		"type": "string"
-	},
-	"backendPrefix":
-	{
-		"type": "string"
-	}
  }, 
  "variables": 
  { 
-	"vnetId": "[resourceId('task3RG','Microsoft.Network/virtualNetworks', 'task3vnet')]",
+	"vnetId": "[resourceId('task3RG','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('frontendSubnetName'))]"
  }, 
  "resources": 
