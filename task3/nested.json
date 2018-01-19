@@ -77,8 +77,8 @@
  }, 
  "variables": 
  { 
-	"vnetId": "[resourceId('task3RG','Microsoft.Network/virtualNetworks', '[parameters('virtualNetworkName')]')]",
-    "subnetRef": "[concat(variables('vnetId'), '/subnets/', '[parameters('frontendSubnetName')]')]",
+	"vnetId": "[resourceId('task3RG','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('frontendSubnetName'))]"
  }, 
  "resources": 
  [ 
