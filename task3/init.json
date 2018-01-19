@@ -1,92 +1,26 @@
 {
  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", 
  "contentVersion": "0.1", 
- "parameters":
- {
- 	"location": 
+ "resources": 
+ [
 	{
-        "type": "string"
-    },
-    "virtualMachineName": 
-	{
-        "type": "string"
-    },
-    "virtualMachineSize": 
-	{
-        "type": "string"
-    },
-    "adminUsername": 
-	{
-        "type": "string"
-    },
-    "virtualNetworkName": 
-	{
-        "type": "string"
-    },
-    "networkInterfaceName": 
-	{
-        "type": "string"
-    },
-    "networkSecurityGroupName": 
-	{
-        "type": "string"
-    },
-    "adminPassword": {
-        "type": "securestring"
-    },
-    "storageAccountName": 
-	{
-        "type": "string"
-    },
-    "storageAccountType": 
-	{
-        "type": "string"
-    },
-    "addressPrefix": 
-	{
-        "type": "string"
-    },
-    "publicIpAddressName": 
-	{
-        "type": "string"
-    },
-    "publicIpAddressType": 
-	{
-        "type": "string"
-    },
-    "publicIpAddressSku": 
-	{
-        "type": "string"
-    },
-	"frontendSubnetName":
-	{
-		"type": "string"
-	},
-	"frontendPrefix":
-	{
-		"type": "string"
-	},
-	"backendSubnetName":
-	{
-		"type": "string"
-	},
-	"backendPrefix":
-	{
-		"type": "string"
-	}
- },
-	"resources": [
-	  {
-		 "apiVersion": "2017-05-10",
-		 "name": "linkedTemplate",
-		 "type": "Microsoft.Resources/deployments",
-		 "properties": {
-		   "mode": "incremental",
-		   "templateLink": {
+		"apiVersion": "2017-05-10",
+		"name": "linkedTemplate",
+		"type": "Microsoft.Resources/deployments",
+		"properties": 
+		{
+			"mode": "incremental",
+			"templateLink": 
+			{
 			  "uri":"https://raw.githubusercontent.com/Usagich/azure-training/master/task3/nested.json",
+			  "contentVersion":"0.1"
+			},
+		   "parametersLink": 
+		   {
+			  "uri":"https://raw.githubusercontent.com/Usagich/azure-training/master/task3/nested.parameters.json",
 			  "contentVersion":"0.1"
 		   }
 		 }
 	  }
-	]
+ ]
 }
