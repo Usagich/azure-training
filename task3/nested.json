@@ -77,7 +77,7 @@
  }, 
  "variables": 
  { 
-	"vnetId": "[resourceId('task3RG','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+	"vnetId": "[resourceId('task3RG','Microsoft.Network/virtualNetworks', 'task3vnet')]",
     "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('frontendSubnetName'))]"
  }, 
  "resources": 
@@ -134,8 +134,8 @@
         "location": "[parameters('location')]",
         "dependsOn": 
 		[
-            "[concat('Microsoft.Network/networkInterfaces/', '[parameters('networkInterfaceName')]')]",
-            "[concat('Microsoft.Storage/storageAccounts/', '[parameters('storageAccountName')]')]"
+            "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]",
+            "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
         ],
         "properties": 
 		{
@@ -177,7 +177,7 @@
                 "networkInterfaces": 
 				[
                     {
-                        "id": "[resourceId('Microsoft.Network/networkInterfaces', '[parameters('networkInterfaceName')]')]"
+                        "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]"
                     }
                 ]
             },
@@ -186,7 +186,7 @@
                 "bootDiagnostics": 
 				{
                     "enabled": true,
-                    "storageUri": "[reference(resourceId('task3RG', 'Microsoft.Storage/storageAccounts', '[parameters('diagnosticsStorageAccountName')]'), '2015-06-15').primaryEndpoints['blob']]"
+                    "storageUri": "[reference(resourceId('task3RG', 'Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
                 }
             }
         }
@@ -198,9 +198,9 @@
         "location": "[parameters('location')]",
         "dependsOn": 
 		[
-            "[concat('Microsoft.Network/virtualNetworks/', '[parameters('networkInterfaceName')]')]",
-            "[concat('Microsoft.Network/publicIpAddresses/', '[parameters('publicIpAddressName')]')]",
-            "[concat('Microsoft.Network/networkSecurityGroups/', '[parameters('networkSecurityGroupName')]')]"
+            "[concat('Microsoft.Network/virtualNetworks/', parameters('networkInterfaceName'))]",
+            "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]",
+            "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]"
         ],
         "properties": 
 		{
@@ -217,14 +217,14 @@
                         "privateIPAllocationMethod": "[parameters('publicIpAddressType')]",
                         "publicIpAddress": 
 						{
-                            "id": "[resourceId('task3RG','Microsoft.Network/publicIpAddresses', '[parameters('publicIpAddressName')]')]"
+                            "id": "[resourceId('task3RG','Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]"
                         }
                     }
                 }
             ],
             "[parameters('networkSecurityGroupName')]": 
 			{
-                "id": "[resourceId('task3RG', 'Microsoft.Network/networkSecurityGroups', '[parameters('networkSecurityGroupName')]')]"
+                "id": "[resourceId('task3RG', 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
             }
         }
     },
