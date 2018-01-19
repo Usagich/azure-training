@@ -77,73 +77,73 @@
  }, 
  "variables": 
  { 
-	"vnetId": "[resourceId('task3RG','Microsoft.Network/virtualNetworks', 'task3network')]",
-    "subnetRef": "[concat(variables('vnetId'), '/subnets/', 'frontend')]",
+	"vnetId": "[resourceId('task3RG','Microsoft.Network/virtualNetworks', '[parameters('virtualNetworkName')]')]",
+    "subnetRef": "[concat(variables('vnetId'), '/subnets/', '[parameters('frontendSubnetName')]')]",
  }, 
  "resources": 
  [ 
 	{
-		"name": "task3storaccou",
+		"name": "[parameters('storageAccountName')]",
 		"type": "Microsoft.Storage/storageAccounts",
 		"apiVersion": "2016-01-01",
 		"sku": 
 		{
-			"name": "Standard_LRS"
+			"name": "[parameters('storageAccountType')]"
 		},
 		"kind": "Storage",
-		"location": "West Europe",
+		"location": "[parameters('location')]",
 		"tags": {},
 		"properties": {}
 	},
 	{
-		"name": "task3network",
+		"name": "[parameters('virtualNetworkName')]",
 		"apiVersion": "2017-08-01",
         "type": "Microsoft.Network/virtualNetworks",
-		"location": "West Europe",
+		"location": "[parameters('location')]",
         "properties": 
 		{
             "addressSpace": 
 			{
                 "addressPrefixes": 
 				[
-                   "192.168.0.0/16"
+                   "[parameters('addressPrefix')]"
                 ]
             },
                 "subnets": [
                     {
-                        "name": "frontend",
+                        "name": "[parameters('frontendSubnetName')]",
                         "properties": 
 						{
-                            "addressPrefix": "192.168.100.0/24"
+                            "addressPrefix": "[parameters('frontendPrefix')]"
                         }
                     },
 					{
-						"name": "backend",
+						"name": "[parameters('backendSubnetName')]",
                         "properties": 
 						{
-                            "addressPrefix": "192.168.200.0/24"
+                            "addressPrefix": "[parameters('backendPrefix')]"
                         }
 					}
                 ]
             }
 	},
 	{
-		"name": "task3VM",
+		"name": "[parameters('virtualMachineName')]",
         "type": "Microsoft.Compute/virtualMachines",
         "apiVersion": "2016-04-30-preview",
-        "location": "West Europe",
+        "location": "[parameters('location')]",
         "dependsOn": 
 		[
-            "[concat('Microsoft.Network/networkInterfaces/', 'task3networkInterface')]",
-            "[concat('Microsoft.Storage/storageAccounts/', 'task3storaccou')]"
+            "[concat('Microsoft.Network/networkInterfaces/', '[parameters('networkInterfaceName')]')]",
+            "[concat('Microsoft.Storage/storageAccounts/', '[parameters('storageAccountName')]')]"
         ],
         "properties": 
 		{
             "osProfile": 
 			{
-                "computerName": "task3VM",
-                "adminUsername": "naliaksandra",
-                "adminPassword": "qqq111QQQ111",
+                "computerName": "[parameters('virtualMachineName')]",
+                "adminUsername": "[parameters('adminUsername')]",
+                "adminPassword": "[parameters('adminPassword')]",
                 "windowsConfiguration": 
 				{
                     "provisionVmAgent": "true"
@@ -151,7 +151,7 @@
             },
             "hardwareProfile": 
 			{
-                "vmSize": "Basic_A1"
+                "vmSize": "[parameters('virtualMachineSize')]"
             },
             "storageProfile": 
 			{
@@ -167,7 +167,7 @@
                     "createOption": "fromImage",
                     "managedDisk": 
 					{
-                        "storageAccountType": "Standard_LRS"
+                        "storageAccountType": "[parameters('storageAccountType')]"
                     }
                 },
                 "dataDisks": []
@@ -177,7 +177,7 @@
                 "networkInterfaces": 
 				[
                     {
-                        "id": "[resourceId('Microsoft.Network/networkInterfaces', 'task3networkInterface')]"
+                        "id": "[resourceId('Microsoft.Network/networkInterfaces', '[parameters('networkInterfaceName')]')]"
                     }
                 ]
             },
@@ -186,21 +186,21 @@
                 "bootDiagnostics": 
 				{
                     "enabled": true,
-                    "storageUri": "[reference(resourceId('task3RG', 'Microsoft.Storage/storageAccounts', 'task3storaccou'), '2015-06-15').primaryEndpoints['blob']]"
+                    "storageUri": "[reference(resourceId('task3RG', 'Microsoft.Storage/storageAccounts', '[parameters('diagnosticsStorageAccountName')]'), '2015-06-15').primaryEndpoints['blob']]"
                 }
             }
         }
     },
     {
-        "name": "task3networkInterface",
+        "name": "[parameters('networkInterfaceName')]",
         "type": "Microsoft.Network/networkInterfaces",
         "apiVersion": "2016-09-01",
-        "location": "West Europe",
+        "location": "[parameters('location')]",
         "dependsOn": 
 		[
-            "[concat('Microsoft.Network/virtualNetworks/', 'task3network')]",
-            "[concat('Microsoft.Network/publicIpAddresses/', 'task3publIP')]",
-            "[concat('Microsoft.Network/networkSecurityGroups/', 'task3networkSecurityGroup')]"
+            "[concat('Microsoft.Network/virtualNetworks/', '[parameters('networkInterfaceName')]')]",
+            "[concat('Microsoft.Network/publicIpAddresses/', '[parameters('publicIpAddressName')]')]",
+            "[concat('Microsoft.Network/networkSecurityGroups/', '[parameters('networkSecurityGroupName')]')]"
         ],
         "properties": 
 		{
@@ -214,39 +214,39 @@
 						{
 							"id": "[variables('subnetRef')]"
 						},
-                        "privateIPAllocationMethod": "Dynamic",
+                        "privateIPAllocationMethod": "[parameters('publicIpAddressType')]",
                         "publicIpAddress": 
 						{
-                            "id": "[resourceId('task3RG','Microsoft.Network/publicIpAddresses', 'task3publIP')]"
+                            "id": "[resourceId('task3RG','Microsoft.Network/publicIpAddresses', '[parameters('publicIpAddressName')]')]"
                         }
                     }
                 }
             ],
-            "networkSecurityGroup": 
+            "[parameters('networkSecurityGroupName')]": 
 			{
-                "id": "[resourceId('task3RG', 'Microsoft.Network/networkSecurityGroups', 'task3networkSecurityGroup')]"
+                "id": "[resourceId('task3RG', 'Microsoft.Network/networkSecurityGroups', '[parameters('networkSecurityGroupName')]')]"
             }
         }
     },
     {
-        "name": "task3publIP",
+        "name": "[parameters('publicIpAddressName')]",
         "type": "Microsoft.Network/publicIpAddresses",
         "apiVersion": "2017-08-01",
-        "location": "West Europe",
+        "location": "[parameters('location')]",
         "properties": 
 		{
-            "publicIpAllocationMethod": "Dynamic"
+            "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
         },
         "sku": 
 		{
-            "name": "Basic"
+            "name": "[parameters('publicIpAddressSku')]"
         }
     },
     {
-        "name": "task3networkSecurityGroup",
+        "name": "[parameters('networkSecurityGroupName')]",
         "type": "Microsoft.Network/networkSecurityGroups",
         "apiVersion": "2017-06-01",
-        "location": "West Europe",
+        "location": "[parameters('location')]",
         "properties": 
 		{
             "securityRules": 

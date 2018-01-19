@@ -35,11 +35,11 @@
 		{
             "value": "qqq111QQQ111"
         },
-        "diagnosticsStorageAccountName": 
+        "storageAccountName": 
 		{
             "value": "task3storaccou"
         },
-        "diagnosticsStorageAccountType": 
+        "storageAccountType": 
 		{
             "value": "Standard_LRS"
         },

@@ -1,32 +1,22 @@
 {
  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", 
- "contentVersion": "", 
- "parameters": 
- { 
- 
- }, 
- "variables": 
- { 
- 
- }, 
- "resources": 
- [ 
-	{
-		"name": "[concat('storage', uniqueString(resourceGroup().id))]",
-		"type": "Microsoft.Storage/storageAccounts",
-		"apiVersion": "2016-01-01",
-		"sku": 
-		{
-			"name": "Standard_LRS"
-		},
-		"kind": "Storage",
-		"location": "West Europe",
-		"tags": {},
-		"properties": {}
-	}
- ], 
- "outputs": 
- { 
- 
- } 
+ "contentVersion": "0.1", 
+	"resources": [
+	  {
+		 "apiVersion": "2017-05-10",
+		 "name": "linkedTemplate",
+		 "type": "Microsoft.Resources/deployments",
+		 "properties": {
+		   "mode": "incremental",
+		   "templateLink": {
+			  "uri":"https://raw.githubusercontent.com/Usagich/azure-training/master/task3/nested.json",
+			  "contentVersion":"0.1"
+		   },
+		   "parametersLink": {
+			  "uri":"https://raw.githubusercontent.com/Usagich/azure-training/master/task3/nested.parameters.json",
+			  "contentVersion":"0.1"
+		   }
+		 }
+	  }
+	]
 }
