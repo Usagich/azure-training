@@ -1,0 +1,79 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "0.4",
+    "parameters": 
+	{
+        "location": 
+		{
+            "value": "West Europe"
+        },
+        "virtualMachineName": 
+		{
+            "value": "task4VM"
+        },
+        "virtualMachineSize": 
+		{
+            "value": "Basic_A1"
+        },
+        "adminUsername": 
+		{
+            "value": "naliaksandra"
+        },
+        "virtualNetworkName": 
+		{
+            "value": "task4vnet"
+        },
+        "networkInterfaceName": 
+		{
+            "value": "task4networkInterface"
+        },
+        "networkSecurityGroupName": 
+		{
+            "value": "task4securityGroup"
+        },
+        "adminPassword": 
+		{
+            "value": "qqq111QQQ111"
+        },
+        "storageAccountName": 
+		{
+            "value": "task4storaccou"
+        },
+        "storageAccountType": 
+		{
+            "value": "Standard_LRS"
+        },
+        "addressPrefix": 
+		{
+            "value": "192.168.0.0/16"
+        },
+        "publicIpAddressName": 
+		{
+            "value": "task4publicIP"
+        },
+        "publicIpAddressType": 
+		{
+            "value": "Dynamic"
+        },
+        "publicIpAddressSku": 
+		{
+            "value": "Basic"
+        },
+		"frontendSubnetName":
+		{
+			"value": "frontend"
+		},
+		"frontendPrefix":
+		{
+			"value": "192.168.100.0/24"
+		},
+		"backendSubnetName":
+		{
+			"value": "backend"
+		},
+		"backendPrefix":
+		{
+			"value": "192.168.200.0/24"
+		}
+    }
+}
