@@ -90,11 +90,15 @@
        {
             "type": "string",
             "defaultValue": "task4DSC.ps1\\task4DSC"
+       },
+       "resourceGroup":
+       {
+           "type": "string"
        }
     }, 
     "variables": 
     { 
-       "vnetId": "[resourceId('task4RG','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+       "vnetId": "[resourceId(parameters('resourceGroup'),'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('frontendSubnetName'))]"
     }, 
     "resources": 
@@ -224,14 +228,14 @@
                            "privateIPAllocationMethod": "[parameters('publicIpAddressType')]",
                            "publicIpAddress": 
                            {
-                               "id": "[resourceId('task4RG','Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]"
+                               "id": "[resourceId(parameters('resourceGroup'), 'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]"
                            }
                        }
                    }
                ],
                "networkSecurityGroup": 
                {
-                   "id": "[resourceId('task4RG', 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+                   "id": "[resourceId(parameters('resourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
                }
            }
        },
@@ -294,7 +298,7 @@
                    "bootDiagnostics": 
                    {
                        "enabled": true,
-                       "storageUri": "[reference(resourceId('task4RG', 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
+                       "storageUri": "[reference(resourceId(parameters('resourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
                    }
                }
            }

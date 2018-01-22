@@ -90,6 +90,10 @@
         "configurationFunction": 
         {
             "value": "task4DSC.ps1\\task4DSC"
+        },
+        "resourceGroup":
+        {
+            "value": "task4RG"
         }
     }
 }
