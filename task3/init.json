@@ -4,7 +4,7 @@
  "resources": 
  [
 	{
-		"apiVersion": "2017-08-01",
+		"apiVersion": "2017-05-10",
 		"name": "linkedTemplate",
 		"type": "Microsoft.Resources/deployments",
 		"properties": 
