@@ -9,7 +9,7 @@
 @{
 
 # Version number of this module.
-ModuleVersion = '1.4.0'
+ModuleVersion = '1.4.3'
 
 # ID used to uniquely identify this module
 GUID = 'b2a06004-4832-4072-8399-0fa47667957c'
@@ -18,7 +18,7 @@ GUID = 'b2a06004-4832-4072-8399-0fa47667957c'
 Author = 'Aliaksandra_Navitska'
 
 # Company or vendor of this module
-CompanyName = 'My Company'
+CompanyName = 'My Corporation'
 
 # Copyright statement for this module
 Copyright = '(c) 2018 Aliaksandra_Navitska. All rights reserved.'
