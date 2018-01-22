@@ -94,7 +94,7 @@
     }, 
     "variables": 
     { 
-       "vnetId": "[resourceId('task3RG','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+       "vnetId": "[resourceId('task4RG','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('frontendSubnetName'))]"
     }, 
     "resources": 
@@ -224,14 +224,14 @@
                            "privateIPAllocationMethod": "[parameters('publicIpAddressType')]",
                            "publicIpAddress": 
                            {
-                               "id": "[resourceId('task3RG','Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]"
+                               "id": "[resourceId('task4RG','Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]"
                            }
                        }
                    }
                ],
                "networkSecurityGroup": 
                {
-                   "id": "[resourceId('task3RG', 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+                   "id": "[resourceId('task4RG', 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
                }
            }
        },
@@ -294,7 +294,7 @@
                    "bootDiagnostics": 
                    {
                        "enabled": true,
-                       "storageUri": "[reference(resourceId('task3RG', 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
+                       "storageUri": "[reference(resourceId('task4RG', 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
                    }
                }
            }
