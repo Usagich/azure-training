@@ -185,7 +185,7 @@
                         "name": "custom-allow-8080",
                         "properties": 
                         {
-                            "priority": 1100,
+                            "priority": 2000,
                             "protocol": "TCP",
                             "access": "Allow",
                             "direction": "Inbound",
