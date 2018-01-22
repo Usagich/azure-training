@@ -73,6 +73,23 @@
        "backendPrefix":
        {
            "type": "string"
+       },
+       "DSCName":
+       {
+            "type": "string"        
+       },
+       "DSCVersion":
+       {
+            "type": "string"
+       },
+       "modulesUrl": 
+       {
+            "type": "string"
+       },
+       "configurationFunction": 
+       {
+            "type": "string",
+            "defaultValue": "task4DSC.ps1\\task4DSC"
        }
     }, 
     "variables": 

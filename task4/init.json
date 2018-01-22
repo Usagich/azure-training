@@ -1,6 +1,26 @@
 {
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", 
-    "contentVersion": "0.4" 
-
-
+    "contentVersion": "0.4",
+    "resources": 
+    [
+       {
+           "apiVersion": "2017-05-10",
+           "name": "linkedTemplate",
+           "type": "Microsoft.Resources/deployments",
+           "properties": 
+           {
+               "mode": "incremental",
+               "templateLink": 
+               {
+                 "uri":"https://raw.githubusercontent.com/Usagich/azure-training/master/task4/vmdeploy.json",
+                 "contentVersion":"0.4"
+               },
+              "parametersLink": 
+              {
+                 "uri":"https://raw.githubusercontent.com/Usagich/azure-training/master/task4/vmdeploy.parameters.json",
+                 "contentVersion":"0.4"
+              }
+            }
+         }
+    ]
 }

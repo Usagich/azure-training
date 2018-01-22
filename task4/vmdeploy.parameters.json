@@ -74,6 +74,22 @@
 		"backendPrefix":
 		{
 			"value": "192.168.200.0/24"
-		}
+        },
+        "DSCName":
+        {
+            "value":  "task4DSC"        
+        },
+        "DSCVersion":
+        {
+            "value":  "1.4"
+        },
+        "modulesUrl": 
+        {
+            "value":  "string"
+        },
+        "configurationFunction": 
+        {
+            "value": "task4DSC.ps1\\task4DSC"
+        }
     }
 }
