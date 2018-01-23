@@ -329,7 +329,11 @@
                         "[parameters('modulesUrl')]"
                     ]
                 },
-                "protectedSettings": {}
+                "protectedSettings": {},
+                "creationData": 
+                {
+                    "createOption":"Empty"
+                }
             }
         }
       
