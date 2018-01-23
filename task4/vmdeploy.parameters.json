@@ -85,7 +85,7 @@
         },
         "modulesUrl": 
         {
-            "value":  "https://naliaksandra.blob.core.windows.net/modules/IISInstallConfiguration.ps1"
+            "value":  "https://naliaksandra.blob.core.windows.net/modules/IISInstallConfiguration.ps1.zip"
         },
         "configurationFunction": 
         {

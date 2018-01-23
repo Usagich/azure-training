@@ -20,10 +20,7 @@ Set-AzureRmContext -SubscriptionId $subscriptionId
 New-AzureRmResourceGroup -Name $resourceGroupName -Location "West Europe"
 New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "https://raw.githubusercontent.com/Usagich/azure-training/master/task4/init.json"
 
-####zip module
-Compress-Archive -Path $moduleLocalPath -DestinationPath $moduleLocalPath"\task4DSC" -Force
 
-#2.	Create a PS script which does the publishing for you.
 #####deploy to azure blob
 $storageAccount = Get-AzureRmStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName 
 $subscriptionName = (Get-AzureRmSubscription -SubscriptionId $subscriptionId).Name
@@ -39,11 +36,7 @@ Set-AzureStorageBlobContent -File $moduleZipDestinationPath -Container $containe
 New-AzureRmAutomationModule -ResourceGroupName $resourceGroupName -AutomationAccountName $automationAccountName -Name $moduleName -ContentLink $moduleURL
 ######################
 
-#####configuration publishing and compilation 
-Import-AzureRmAutomationDscConfiguration -AutomationAccountName $automationAccountName -ResourceGroupName $resourceGroupName -SourcePath $moduleLocalPath"\task4DSC.ps1" -Published -Force
-Start-AzureRmAutomationDscCompilationJob -AutomationAccountName $automationAccountName -ResourceGroupName $resourceGroupName -ConfigurationName "task4DSC"
 
-
-
-###Set-AzureRmVMCustomScriptExtension -ResourceGroupName $resourceGroupName -VMName "task4VM" -Name "IISInstallConfiguration" `
+############testing 
+Set-AzureRmVMCustomScriptExtension -ResourceGroupName $resourceGroupName -VMName "task4VM" -Name "IISInstallConfiguration" `
     -FileUri "https://naliaksandra.blob.core.windows.net/modules/IISInstallConfiguration.ps1" -Run "IISInstallConfiguration.ps1" -Location "West Europe"
