@@ -318,9 +318,9 @@
             },
             "properties": 
             {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.4",
+                "publisher": "Microsoft.PowerShell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.10.0.0",
                 "autoUpgradeMinorVersion": true,
                 "settings": 
                 {
