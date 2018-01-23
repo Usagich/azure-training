@@ -310,7 +310,7 @@
             "location": "parameters('location')",
             "dependsOn": 
             [
-                "[concat('Microsoft.Compute/VirtualMachines', parameters('virtualMachineName'))]"
+                "[concat('Microsoft.Compute/VirtualMachines/', parameters('virtualMachineName'))]"
             ],
             "properties": 
             {
