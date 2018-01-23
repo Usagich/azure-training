@@ -304,32 +304,38 @@
            }
        },
        {
-            "name": "[parameters('DSCName')]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2015-06-15",
+            "type": "extensions",
+            "name": "parameters('DSCName')",
             "location": "parameters('location')",
             "dependsOn": 
             [
-                "[concat('Microsoft.Compute/VirtualMachines/', parameters('virtualMachineName'))]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'),copyindex())]"
             ],
+            "tags": 
+            {
+                "displayName": "parameters('DSCName')"
+            },
             "properties": 
             {
-                "publisher": "Microsoft.Powershell",
-                "type": "DSC",
-                "typeHandlerVersion": "2.9",
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.4",
                 "autoUpgradeMinorVersion": true,
-                "forceUpdateTag": "[parameters('DSCVersion')]",
-                "settings": {
-                    "ModulesUrl": "[parameters('modulesUrl')]",
-                    "ConfigurationFunction": "[parameters('configurationFunction')]",
-                    "Properties": 
-                    {
-                       "MachineName": "[parameters('virtualMachineName')]"
-                    }
-                },
-                "protectedSettings": null      
+                "settings": 
+            {
+                "fileUris": 
+                [
+                    "[parameters('modulesUrl')]"
+                ]
+            },
+            "protectedSettings": 
+            {
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ',parameters('DSCName'),'.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'))]"
             }
-       }
+            }
+        }
+      
     ], 
     "outputs": 
     { 
