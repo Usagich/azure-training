@@ -305,7 +305,7 @@
        },
        {
             "name": "[parameters('DSCName')]",
-            "type": "extentions",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2015-06-15",
             "location": "parameters('location')",
             "dependsOn": 
