@@ -324,7 +324,7 @@
                     "ConfigurationFunction": "[parameters('configurationFunction')]",
                     "Properties": 
                     {
-                        "MachineName": "[parameters('virtualMachineName')]"
+                        "ComputerName": "[parameters('virtualMachineName')]"
                     }
                 },
                 "protectedSettings": null
