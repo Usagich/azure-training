@@ -320,20 +320,18 @@
             {
                 "publisher": "Microsoft.PowerShell",
                 "type": "DSC",
-                "typeHandlerVersion": "2.10",
+                "typeHandlerVersion": "2.20",
                 "autoUpgradeMinorVersion": true,
                 "settings": 
                 {
-                    "fileUris": 
-                    [
-                        "[parameters('modulesUrl')]"
-                    ]
+                    "configuration": 
+                    {
+                        "url": "[parameters('modulesUrl')]",
+                        "script": "IISInstallConfiguration.ps1"
+                    }
+             
                 },
-                "protectedSettings": {},
-                "creationData": 
-                {
-                    "createOption":"Attach"
-                }
+                "protectedSettings": {}
             }
         }
       
