@@ -304,13 +304,13 @@
            }
        },
        {
-            "apiVersion": "2015-06-15",
-            "type": "extensions",
+            "apiVersion": "2017-03-30",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "IISInstallConfiguration",
             "location": "parameters('location')",
             "dependsOn": 
             [
-                "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'),copyindex())]"
+                "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
             ],
             "tags": 
             {
@@ -323,16 +323,13 @@
                 "typeHandlerVersion": "1.4",
                 "autoUpgradeMinorVersion": true,
                 "settings": 
-            {
-                "fileUris": 
-                [
-                    "[parameters('modulesUrl')]"
-                ]
-            },
-            "protectedSettings": 
-            {
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File IISInstallConfiguration.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'))]"
-            }
+                {
+                    "fileUris": 
+                    [
+                        "[parameters('modulesUrl')]"
+                    ]
+                },
+                "protectedSettings": {}
             }
         }
       
