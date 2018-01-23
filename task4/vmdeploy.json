@@ -320,7 +320,7 @@
             {
                 "publisher": "Microsoft.PowerShell",
                 "type": "DSC",
-                "typeHandlerVersion": "2.10.0.0",
+                "typeHandlerVersion": "2.10",
                 "autoUpgradeMinorVersion": true,
                 "settings": 
                 {
