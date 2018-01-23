@@ -77,7 +77,7 @@
         },
         "DSCName":
         {
-            "value":  "task4DSC"        
+            "value":  "IISInstallConfiguration"        
         },
         "DSCVersion":
         {
@@ -85,11 +85,11 @@
         },
         "modulesUrl": 
         {
-            "value":  "string"
+            "value":  "https://naliaksandra.blob.core.windows.net/modules/IISInstallConfiguration.ps1"
         },
         "configurationFunction": 
         {
-            "value": "task4DSC.ps1\\task4DSC"
+            "value": "IISInstallConfiguration.ps1\\IISInstallConfiguration"
         },
         "resourceGroup":
         {

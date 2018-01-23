@@ -43,3 +43,7 @@ New-AzureRmAutomationModule -ResourceGroupName $resourceGroupName -AutomationAcc
 Import-AzureRmAutomationDscConfiguration -AutomationAccountName $automationAccountName -ResourceGroupName $resourceGroupName -SourcePath $moduleLocalPath"\task4DSC.ps1" -Published -Force
 Start-AzureRmAutomationDscCompilationJob -AutomationAccountName $automationAccountName -ResourceGroupName $resourceGroupName -ConfigurationName "task4DSC"
 
+
+
+###Set-AzureRmVMCustomScriptExtension -ResourceGroupName $resourceGroupName -VMName "task4VM" -Name "IISInstallConfiguration" `
+    -FileUri "https://naliaksandra.blob.core.windows.net/modules/IISInstallConfiguration.ps1" -Run "IISInstallConfiguration.ps1" -Location "West Europe"
