@@ -304,34 +304,32 @@
            }
        },
        {
-            "apiVersion": "2017-03-30",
-            "type": "extensions",
-            "name": "Microsoft.PowerShell.DSC",
-            "location": "parameters('location')",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(parameters('virtualMachineName'),'/', parameters('DSCName'))]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[parameters('location')]",
             "dependsOn": 
             [
                 "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
             ],
-            "tags": 
-            {
-                "displayName": "IISInstallConfiguration"
-            },
             "properties": 
             {
-                "publisher": "Microsoft.PowerShell",
-                "type": "Microsoft.PowerShell.DSC",
-                "typeHandlerVersion": "2.20",
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
                 "autoUpgradeMinorVersion": true,
                 "settings": 
                 {
-                    "configuration": 
+                    "ModulesUrl": "[parameters('modulesUrl')]",
+                    "ConfigurationFunction": "[parameters('configurationFunction')]",
+                    "Properties": 
                     {
-                        "url": "[parameters('modulesUrl')]",
-                        "script": "IISInstallConfiguration.ps1"
+                        "MachineName": "[parameters('virtualMachineName')]"
                     }
-             
                 },
-                "protectedSettings": {}
+                "protectedSettings": null
+
+           
             }
         }
       
