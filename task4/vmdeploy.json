@@ -306,7 +306,7 @@
        {
             "apiVersion": "2017-03-30",
             "type": "extensions",
-            "name": "IISInstallConfiguration",
+            "name": "Microsoft.PowerShell.DSC",
             "location": "parameters('location')",
             "dependsOn": 
             [
