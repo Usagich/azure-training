@@ -331,7 +331,7 @@
             },
             "protectedSettings": 
             {
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ',parameters('DSCName'),'.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'))]"
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File IISInstallConfiguration.ps1 -user ',parameters('adminUsername'),' -password ',parameters('adminPassword'))]"
             }
             }
         }
