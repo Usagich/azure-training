@@ -306,7 +306,7 @@
        {
             "apiVersion": "2015-06-15",
             "type": "extensions",
-            "name": "parameters('DSCName')",
+            "name": "IISInstallConfiguration",
             "location": "parameters('location')",
             "dependsOn": 
             [
@@ -314,7 +314,7 @@
             ],
             "tags": 
             {
-                "displayName": "parameters('DSCName')"
+                "displayName": "IISInstallConfiguration"
             },
             "properties": 
             {
