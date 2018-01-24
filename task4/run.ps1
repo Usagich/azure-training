@@ -31,15 +31,12 @@ Set-AzureRmContext -Subscription $subscriptionName
 #$storageAccountKey = (Get-AzureRmStorageAccountKey -ResourceGroupName $resourseGroupName -Name $storageAccountName).Value[0]
 $context = $storageAccount.Context
 ####upload file to blob container
-$filePath = "D:\azure_training\azure-training\task4\init.json"
-$fileName = "init.json"
-Set-AzureStorageBlobContent -File $filePath -Container $containerName -Blob $fileName -Context $context
-$filePath = "D:\azure_training\azure-training\task4\vmdeploy.json"
-$fileName = "vmdeploy.json"
-Set-AzureStorageBlobContent -File $filePath -Container $containerName -Blob $fileName -Context $context
-$filePath = "D:\azure_training\azure-training\task4\vmdeploy.parameters.json"
-$fileName = "vmdeploy.parameters.json"
-Set-AzureStorageBlobContent -File $filePath -Container $containerName -Blob $fileName -Context $context
+$filePath = "D:\azure_training\azure-training\task4\init.json", "D:\azure_training\azure-training\task4\vmdeploy.json", "D:\azure_training\azure-training\task4\vmdeploy.parameters.json"
+foreach ($path in $filePath)
+{
+    $fileName = $path.Split('\')[-1]
+    Set-AzureStorageBlobContent -File $path -Container $containerName -Blob $fileName -Context $context
+}
 
 
 
