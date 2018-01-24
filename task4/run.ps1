@@ -26,8 +26,7 @@ $passwordVM = "qqq111QQQ111"
 New-AzureRmKeyVault -VaultName $vaultName -ResourceGroupName $resourceGroupName -Location "West Europe" -EnabledForTemplateDeployment
 Register-AzureRmResourceProvider -ProviderNamespace "Microsoft.KeyVault"
 $secretValue = ConvertTo-SecureString $passwordVM -AsPlainText -Force
-Set-AzureKeyVaultSecret -VaultName $vaultName -Name "secret" -SecretValue $secretValue
-
+Set-AzureRKeyVaultSecret -VaultName $vaultName -Name "secret" -SecretValue $secretValue
 
 
 New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "https://naliaksandra.blob.core.windows.net/templates/init.json"

@@ -35,7 +35,7 @@
 		{
             "reference": {
                 "keyVault": {
-                  "id": "/subscriptions/b1d40bc1-2977-4394-b374-fe62498046e2/resourceGroups/task4VM/providers/Microsoft.KeyVault/vaults/VMPasswordVault"
+                  "id": "/subscriptions/b1d40bc1-2977-4394-b374-fe62498046e2/resourceGroups/task4RG/providers/Microsoft.KeyVault/vaults/VMPasswordVault"
                 },
                 "secretName": "secret"
               }
