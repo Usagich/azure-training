@@ -18,25 +18,33 @@ Set-AzureRmContext -SubscriptionId $subscriptionId
 
 
 New-AzureRmResourceGroup -Name $resourceGroupName -Location "West Europe"
-New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "https://raw.githubusercontent.com/Usagich/azure-training/master/task4/init.json"
+
+
+$vaultName = "VMPasswordVault"
+$passwordVM = "qqq111QQQ111"
+
+New-AzureRmKeyVault -VaultName $vaultName -ResourceGroupName $resourceGroupName -Location "West Europe" -EnabledForTemplateDeployment
+Register-AzureRmResourceProvider -ProviderNamespace "Microsoft.KeyVault"
+$secretValue = ConvertTo-SecureString $passwordVM -AsPlainText -Force
+Set-AzureKeyVaultSecret -VaultName $vaultName -Name "secret" -SecretValue $secretValue
+
+
+
+New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "https://naliaksandra.blob.core.windows.net/templates/init.json"
+
+
+
+
+
+
 
 
 #####deploy to azure blob
 $storageAccount = Get-AzureRmStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName 
 $subscriptionName = (Get-AzureRmSubscription -SubscriptionId $subscriptionId).Name
 Set-AzureRmContext -Subscription $subscriptionName
-$storageAccountKey = (Get-AzureRmStorageAccountKey -ResourceGroupName $resourseGroupName -Name $storageAccountName).Value[0]
-
+#$storageAccountKey = (Get-AzureRmStorageAccountKey -ResourceGroupName $resourseGroupName -Name $storageAccountName).Value[0]
 $ctx = $storageAccount.Context
 ####upload zip to blob container
 Set-AzureStorageBlobContent -File $moduleZipDestinationPath -Container $containerName -Blob $moduleZipDestinationPath -Context $ctx 
 
-
-######publish module to Azure Automation
-New-AzureRmAutomationModule -ResourceGroupName $resourceGroupName -AutomationAccountName $automationAccountName -Name $moduleName -ContentLink $moduleURL
-######################
-
-
-############testing 
-Set-AzureRmVMCustomScriptExtension -ResourceGroupName $resourceGroupName -VMName "task4VM" -Name "IISInstallConfiguration" `
-    -FileUri "https://naliaksandra.blob.core.windows.net/modules/IISInstallConfiguration.ps1" -Run "IISInstallConfiguration.ps1" -Location "West Europe"

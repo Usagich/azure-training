@@ -12,12 +12,12 @@
                "mode": "incremental",
                "templateLink": 
                {
-                 "uri":"https://raw.githubusercontent.com/Usagich/azure-training/master/task4/vmdeploy.json",
+                 "uri":"https://naliaksandra.blob.core.windows.net/templates/vmdeploy.json?sv=2017-04-17&ss=bfqt&srt=sco&sp=rwdlacup&se=2018-01-28T19:18:11Z&st=2018-01-24T09:18:11Z&spr=https,http&sig=GtpZayrcXB%2FneRpUXx2m2nMWPuFOWBo%2FYCrg%2FdcfS08%3D",
                  "contentVersion":"0.4"
                },
               "parametersLink": 
               {
-                 "uri":"https://raw.githubusercontent.com/Usagich/azure-training/master/task4/vmdeploy.parameters.json",
+                 "uri":"https://naliaksandra.blob.core.windows.net/templates/vmdeploy.parameters.json?sv=2017-04-17&ss=bfqt&srt=sco&sp=rwdlacup&se=2018-01-28T19:18:11Z&st=2018-01-24T09:18:11Z&spr=https,http&sig=GtpZayrcXB%2FneRpUXx2m2nMWPuFOWBo%2FYCrg%2FdcfS08%3D",
                  "contentVersion":"0.4"
               }
             }
