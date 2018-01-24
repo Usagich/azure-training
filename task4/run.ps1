@@ -1,25 +1,20 @@
 param
 (
     [string] $resourceGroupName = "task4RG",
-    [string] $automationAccountName = "task4AA",
     [string] $subscriptionId = "b1d40bc1-2977-4394-b374-fe62498046e2",
-    [string] $moduleURL = "https://naliaksandra1.blob.core.windows.net/modules/task4DSC.zip",
-    [string] $moduleName = "task4",
-    [string] $moduleLocalPath = "D:\azure_training\azure-training\task4",
-    [string] $moduleZipDestinationPath = "task4DSC.zip",
     [string] $storageAccountName = "naliaksandra",
-    [string] $containerName = "modules"
+    [string] $containerName = "templates",
+    [string] $templateURL = "https://naliaksandra.blob.core.windows.net/templates/init.json",
+    [string] $resourceGroupStorage = "task3RG"
 )
-
-##########Import-Module -Name Vagrant
 
 Login-AzureRmAccount 
 Set-AzureRmContext -SubscriptionId $subscriptionId 
 
-
+##resource group creation
 New-AzureRmResourceGroup -Name $resourceGroupName -Location "West Europe"
 
-
+####vault creation
 $vaultName = "VMPasswordVault"
 $passwordVM = "qqq111QQQ111"
 
@@ -29,21 +24,24 @@ $secretValue = ConvertTo-SecureString $passwordVM -AsPlainText -Force
 Set-AzureRKeyVaultSecret -VaultName $vaultName -Name "secret" -SecretValue $secretValue
 
 
-New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile "https://naliaksandra.blob.core.windows.net/templates/init.json"
-
-
-
-
-
-
-
-
 #####deploy to azure blob
-$storageAccount = Get-AzureRmStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName 
+$storageAccount = Get-AzureRmStorageAccount -ResourceGroupName $resourceGroupStorage -Name $storageAccountName 
 $subscriptionName = (Get-AzureRmSubscription -SubscriptionId $subscriptionId).Name
 Set-AzureRmContext -Subscription $subscriptionName
 #$storageAccountKey = (Get-AzureRmStorageAccountKey -ResourceGroupName $resourseGroupName -Name $storageAccountName).Value[0]
-$ctx = $storageAccount.Context
-####upload zip to blob container
-Set-AzureStorageBlobContent -File $moduleZipDestinationPath -Container $containerName -Blob $moduleZipDestinationPath -Context $ctx 
+$context = $storageAccount.Context
+####upload file to blob container
+$filePath = "D:\azure_training\azure-training\task4\init.json"
+$fileName = "init.json"
+Set-AzureStorageBlobContent -File $filePath -Container $containerName -Blob $fileName -Context $context
+$filePath = "D:\azure_training\azure-training\task4\vmdeploy.json"
+$fileName = "vmdeploy.json"
+Set-AzureStorageBlobContent -File $filePath -Container $containerName -Blob $fileName -Context $context
+$filePath = "D:\azure_training\azure-training\task4\vmdeploy.parameters.json"
+$fileName = "vmdeploy.parameters.json"
+Set-AzureStorageBlobContent -File $filePath -Container $containerName -Blob $fileName -Context $context
 
+
+
+#####run template
+New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $templateURL
