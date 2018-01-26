@@ -13,10 +13,8 @@ $vnet2GatewaySubnetConfiguration = New-AzureRmVirtualNetworkSubnetConfig -Name G
 #Remove-AzureRmVirtualNetworkSubnetConfig -Name $vnet2GatewaySubnetConfiguration.Name
 
 
-New-AzureRmVirtualNetwork -Name task2vnet1 -ResourceGroupName $resourceGroup.ResourceGroupName -AddressPrefix 192.168.0.0/24 -Subnet $vnet1GatewaySubnetConfiguration -Location "West Europe"
-$getVnet1 = Get-AzureRmVirtualNetwork -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2vnet1
-New-AzureRmVirtualNetwork -Name task2vnet2 -ResourceGroupName $resourceGroup.ResourceGroupName -AddressPrefix 172.16.0.0/24 -Subnet $vnet2GatewaySubnetConfiguration -Location "West Europe"
-$getVnet2 = Get-AzureRmVirtualNetwork -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2vnet2
+$vnet1 = New-AzureRmVirtualNetwork -Name task2vnet1 -ResourceGroupName $resourceGroup.ResourceGroupName -AddressPrefix 192.168.0.0/24 -Subnet $vnet1GatewaySubnetConfiguration -Location "West Europe"
+$vnet2 = New-AzureRmVirtualNetwork -Name task2vnet2 -ResourceGroupName $resourceGroup.ResourceGroupName -AddressPrefix 172.16.0.0/24 -Subnet $vnet2GatewaySubnetConfiguration -Location "West Europe"
 #Remove-AzureRmVirtualNetwork -Name $vnet1.Name
 #Remove-AzureRmVirtualNetwork -Name $vnet2.Name
 $getSubnetConfiguration1 = Get-AzureRmVirtualNetworkSubnetConfig -Name $vnet1GatewaySubnetConfiguration.Name -VirtualNetwork $getVnet1
@@ -32,12 +30,10 @@ $vpnIPconf2 = New-AzureRmVirtualNetworkGatewayIpConfig -Name task2vpnIPconf2 -Su
 #Remove-AzureRmVirtualNetworkGatewayIpConfig -Name $vpnIPconf1
 #Remove-AzureRmVirtualNetworkGatewayIpConfig -Name $vpnIPconf2
 
-New-AzureRmVirtualNetworkGateway -Name task2VPNgateway1 -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -IpConfigurations $vpnIPconf1 -GatewayType Vpn -VpnType RouteBased -EnableBgp $false -GatewaySku Standard
-New-AzureRmVirtualNetworkGateway -Name task2VPNgateway2 -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -IpConfigurations $vpnIPconf2 -GatewayType Vpn -VpnType RouteBased -EnableBgp $false -GatewaySku Standard
-$getVPNsubnet1 = Get-AzureRmVirtualNetworkGateway -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2VPNgateway1
-$getVPNsubnet2 = Get-AzureRmVirtualNetworkGateway -ResourceGroupName $resourceGroup.ResourceGroupName -Name task2VPNgateway2
-#Remove-AzureRmVirtualNetworkGateway -Name $getVPNsubnet1.Name
-#Remove-AzureRmVirtualNetworkGateway -Name $getVPNsubnet2.Name
+$VPNsubnet1 = New-AzureRmVirtualNetworkGateway -Name task2VPNgateway1 -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -IpConfigurations $vpnIPconf1 -GatewayType Vpn -VpnType RouteBased -EnableBgp $false -GatewaySku Standard
+$VPNsubnet2 = New-AzureRmVirtualNetworkGateway -Name task2VPNgateway2 -ResourceGroupName $resourceGroup.ResourceGroupName -Location "West Europe" -IpConfigurations $vpnIPconf2 -GatewayType Vpn -VpnType RouteBased -EnableBgp $false -GatewaySku Standard
+#Remove-AzureRmVirtualNetworkGateway -Name $VPNsubnet1.Name
+#Remove-AzureRmVirtualNetworkGateway -Name $VPNsubnet2.Name
 
 
 New-AzureRmVirtualNetworkGatewayConnection -Name task2connection1to2 -ResourceGroupName $resourceGroup.ResourceGroupName -VirtualNetworkGateway1 $getVPNsubnet1 -VirtualNetworkGateway2 $getVPNsubnet2 -Location "West Europe" -ConnectionType Vnet2Vnet -SharedKey 'zaq123'
