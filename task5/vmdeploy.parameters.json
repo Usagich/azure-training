@@ -1,0 +1,104 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "0.4",
+    "parameters": 
+	{
+        "location": 
+		{
+            "value": "West Europe"
+        },
+        "virtualMachineName": 
+		{
+            "value": "task4VM"
+        },
+        "virtualMachineSize": 
+		{
+            "value": "Standard_B4ms"
+        },
+        "adminUsername": 
+		{
+            "value": "naliaksandra"
+        },
+        "virtualNetworkName": 
+		{
+            "value": "task4vnet"
+        },
+        "networkInterfaceName": 
+		{
+            "value": "task4networkInterface"
+        },
+        "networkSecurityGroupName": 
+		{
+            "value": "task4securityGroup"
+        },
+        "adminPassword": 
+		{
+            "reference": {
+                "keyVault": {
+                  "id": "/subscriptions/b1d40bc1-2977-4394-b374-fe62498046e2/resourceGroups/task4RG/providers/Microsoft.KeyVault/vaults/VMPasswordVault"
+                },
+                "secretName": "secret"
+              }
+        },
+        "storageAccountName": 
+		{
+            "value": "task4storaccou"
+        },
+        "storageAccountType": 
+		{
+            "value": "Standard_LRS"
+        },
+        "addressPrefix": 
+		{
+            "value": "192.168.0.0/16"
+        },
+        "publicIpAddressName": 
+		{
+            "value": "task4publicIP"
+        },
+        "publicIpAddressType": 
+		{
+            "value": "Dynamic"
+        },
+        "publicIpAddressSku": 
+		{
+            "value": "Basic"
+        },
+		"frontendSubnetName":
+		{
+			"value": "frontend"
+		},
+		"frontendPrefix":
+		{
+			"value": "192.168.100.0/24"
+		},
+		"backendSubnetName":
+		{
+			"value": "backend"
+		},
+		"backendPrefix":
+		{
+			"value": "192.168.200.0/24"
+        },
+        "DSCName":
+        {
+            "value":  "IISInstallConfiguration"        
+        },
+        "DSCVersion":
+        {
+            "value":  "1.4"
+        },
+        "modulesUrl": 
+        {
+            "value":  "https://naliaksandra.blob.core.windows.net/modules/IISInstallConfiguration.ps1.zip"
+        },
+        "configurationFunction": 
+        {
+            "value": "IISInstallConfiguration.ps1\\IISInstallConfiguration"
+        },
+        "resourceGroup":
+        {
+            "value": "task4RG"
+        }
+    }
+}
