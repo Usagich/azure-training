@@ -4,7 +4,7 @@ param
     [string] $subscriptionId = "b1d40bc1-2977-4394-b374-fe62498046e2",
     [string] $storageAccountName = "naliaksandra",
     [string] $containerName = "templates",
-    [string] $templateURL = "https://naliaksandra.blob.core.windows.net/templates/init.json",
+    [string] $templateURL = "https://naliaksandra.blob.core.windows.net/templates/init5.json",
     [string] $resourceGroupStorage = "storage",
     [string] $automationAccountName = "task5AA"
 )
@@ -15,21 +15,7 @@ Set-AzureRmContext -SubscriptionId $subscriptionId
 ##resource group creation
 New-AzureRmResourceGroup -Name $resourceGroupName -Location "West Europe"
 
-
-#######certificate
-$certName = 'task5SAN'
-$certStore = 'cert:\LocalMachine\My'
-$certPath = '.\task5SAN.pfx'
-$certPwd = ConvertTo-SecureString -String 'P@$$w0rd' -AsPlainText -Force
-
-$cert = New-SelfSignedCertificate -CertStoreLocation $certStore -Subject "CN=Aliaksandra"
-$path = 'cert:\localMachine\my\' + $cert.thumbprint 
-Export-PfxCertificate -cert $path -FilePath $certPath -Password $certPwd
-
-New-AzureRmAutomationCertificate -AutomationAccountName $automationAccountName -Name $certName -Path $certPath –Password $certPwd -Exportable -ResourceGroupName $resourceGroupName
-
-
-####vault creation
+####vault for VM creation
 $vaultName = "VMPasswordVault"
 $passwordVM = "qqq111QQQ111"
 
@@ -38,22 +24,30 @@ Register-AzureRmResourceProvider -ProviderNamespace "Microsoft.KeyVault"
 $secretValue = ConvertTo-SecureString $passwordVM -AsPlainText -Force
 
 #sorry, but you should manually add your access permissions here: 
-#https://portal.azure.com/#resource/subscriptions/b1d40bc1-2977-4394-b374-fe62498046e2/resourceGroups/task4RG/providers/Microsoft.KeyVault/vaults/VMPasswordVault/access_policies
+#https://portal.azure.com/#resource/subscriptions/b1d40bc1-2977-4394-b374-fe62498046e2/resourceGroups/task5RG/providers/Microsoft.KeyVault/vaults/VMPasswordVault/access_policies
 #then you can create a secret
 Set-AzureKeyVaultSecret -VaultName $vaultName -Name "secret" -SecretValue $secretValue
 
-###$userEmail = (Get-AzureRmContext).Account.id
-###Set-AzureRmKeyVaultAccessPolicy -VaultName $vaultName -ResourceGroupName $resourceGroupName -UserPrincipalName $userEmail -PermissionsToKeys get,update -PermissionsToSecrets set,get -PermissionsToCertificates get -PassThru
+####vault for Automation Account creation
+$vaultName = "AAPasswordVault"
+$passwordVM = "Fafo7145"
 
+New-AzureRmKeyVault -VaultName $vaultName -ResourceGroupName $resourceGroupName -Location "West Europe" -EnabledForTemplateDeployment
+Register-AzureRmResourceProvider -ProviderNamespace "Microsoft.KeyVault"
+$secretValue = ConvertTo-SecureString $passwordVM -AsPlainText -Force
+
+#sorry, but you should manually add your access permissions here: 
+#https://portal.azure.com/#resource/subscriptions/b1d40bc1-2977-4394-b374-fe62498046e2/resourceGroups/task5RG/providers/Microsoft.KeyVault/vaults/AAPasswordVault/access_policies
+#then you can create a secret
+Set-AzureKeyVaultSecret -VaultName $vaultName -Name "autopass" -SecretValue $secretValue
 
 #####deploy to azure blob
 $storageAccount = Get-AzureRmStorageAccount -ResourceGroupName $resourceGroupStorage -Name $storageAccountName 
 $subscriptionName = (Get-AzureRmSubscription -SubscriptionId $subscriptionId).Name
 Set-AzureRmContext -Subscription $subscriptionName
-#$storageAccountKey = (Get-AzureRmStorageAccountKey -ResourceGroupName $resourseGroupName -Name $storageAccountName).Value[0]
 $context = $storageAccount.Context
 ####upload file to blob container
-$filePath = ".\init.json", ".\vmdeploy.json", ".\vmdeploy.parameters.json"
+$filePath = ".\init5.json", ".\vmdeploy5.json", ".\vmdeploy5.parameters.json"
 foreach ($path in $filePath)
 {
     $fileName = $path.Split('\')[-1]
@@ -61,6 +55,11 @@ foreach ($path in $filePath)
 }
 
 
-
 #####run template
 New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $templateURL
+
+
+$cred = Get-AzureRmAutomationCredential -AutomationAccountName $automationAccountName -Name task5cred -ResourceGroupName task5RG
+Get-AzureRmContext -
+
+######run runbook
