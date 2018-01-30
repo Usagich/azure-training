@@ -1,0 +1,610 @@
+{
+        "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", 
+        "contentVersion": "0.5", 
+        "parameters": 
+        { 
+        "location": 
+        {
+            "type": "string"
+        },
+        "virtualMachineServer": 
+        {
+            "type": "string"
+        },
+        "virtualMachineNonServer": 
+        {
+            "type": "string"
+        },
+        "virtualMachineSize": 
+        {
+            "type": "string"
+        },
+        "adminUsername": 
+        {
+            "type": "string"
+        },
+        "virtualNetworkName": 
+        {
+            "type": "string"
+        },
+        "networkInterfaceServ": 
+        {
+            "type": "string"
+        },
+        "networkInterfaceNonServ": 
+        {
+            "type": "string"
+        },
+        "networkSecurityGroupServ": 
+        {
+            "type": "string"
+        },
+        "networkSecurityGroupNonServ": 
+        {
+            "type": "string"
+        },
+        "adminPassword": {
+            "type": "securestring"
+        },
+        "storageAccountName": 
+        {
+            "type": "string"
+        },
+        "storageAccountType": 
+        {
+            "type": "string"
+        },
+        "addressPrefix": 
+        {
+            "type": "string"
+        },
+        "publicIpAddressServer": 
+        {
+            "type": "string"
+        },
+        "publicIpAddressNonServer": 
+        {
+            "type": "string"
+        },
+        "publicIpAddressType": 
+        {
+            "type": "string"
+        },
+        "publicIpAddressSku": 
+        {
+            "type": "string"
+        },
+        "frontendSubnetName":
+        {
+            "type": "string"
+        },
+        "frontendPrefix":
+        {
+            "type": "string"
+        },
+        "backendSubnetName":
+        {
+            "type": "string"
+        },
+        "backendPrefix":
+        {
+            "type": "string"
+        },
+        "DSCName":
+        {
+                "type": "string"        
+        },
+        "resourceGroup":
+        {
+            "type": "string"
+        },
+        "automationAccountName":
+        {
+            "type": "string"
+        },
+        "runbookName":
+        {
+                "type": "string"
+        },
+        "runbookUri":
+        {
+                "type": "string"
+        },
+        "automationUserName":
+        {
+            "type": "string"
+        },
+        "automationPassword":
+        {
+            "type": "securestring"
+        },
+        "automationCredentialName":
+        {
+            "type": "string"
+        },
+        "jobId":
+        {
+            "type": "string"
+        },
+        "configurationUrl":
+        {
+            "type": "string"
+        }
+        }, 
+        "variables": 
+        { 
+        "vnetId": "[resourceId(parameters('resourceGroup'),'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('frontendSubnetName'))]"
+        }, 
+        "resources": 
+        [ 
+            {
+                "name": "[parameters('storageAccountName')]",
+                "type": "Microsoft.Storage/storageAccounts",
+                "apiVersion": "2016-01-01",
+                "sku": 
+                {
+                    "name": "[parameters('storageAccountType')]"
+                },
+                "kind": "Storage",
+                "location": "[parameters('location')]",
+                "tags": {},
+                "properties": {}
+
+            },
+            {
+                "name": "[parameters('automationAccountName')]",
+                "type": "Microsoft.Automation/automationAccounts",
+                "apiVersion": "2015-01-01-preview",
+                "properties": 
+                {
+                        "sku": 
+                        {
+                            "name": "Basic"
+                        }
+                },
+                "location": "[parameters('location')]",
+                "tags": {},
+                "resources": 
+                [
+                    {
+                        "name": "ResourceGroupName",
+                        "type": "variables",
+                        "apiVersion": "2015-10-31",
+                        "dependsOn": 
+                        [
+                            "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]"
+                        ],
+                        "tags": {},
+                        "properties": 
+                        {
+                            "value": "\"task5RG\""
+                        }
+                    },
+                    {
+                        "name": "[parameters('DSCName')]",
+                        "type": "Configurations",
+                        "apiVersion": "2015-10-31",
+                        "location": "[parameters('location')]",
+                        "tags": {},
+                        "dependsOn": 
+                        [
+                          "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]"
+                        ],
+                        "properties": {
+                          "logVerbose": "false",
+                          "state": "Published",
+                          "overwrite": "true",
+                          "Source": {
+                            "type": "uri",
+                            "Value": "[parameters('configurationUrl')]"
+                          }
+                        }
+                    },
+                    {
+                        "name": "[parameters('runbookName')]",
+                        "type": "runbooks",
+                        "apiVersion": "2015-01-01-preview",
+                        "location": "[parameters('location')]",
+                        "tags": { },
+                        "dependsOn": 
+                        [
+                            "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]"
+                        ],
+                        "properties": 
+                        {
+                            "runbookType": "GraphPowerShell",
+                            "logProgress": "false",
+                            "logVerbose": "false",
+                            "publishContentLink": 
+                            {
+                                "uri": "[parameters('runbookUri')]",
+                                "version": "1.0.0.0"
+                            }
+                        }
+                    },
+                    {
+                        "name": "[parameters('automationCredentialName')]",
+                        "type": "credentials",
+                        "apiVersion": "2015-01-01-preview",
+                        "location": "[parameters('location')]",
+                        "dependsOn": 
+                        [
+                            "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]"
+                        ],
+                        "tags": { },
+                        "properties": 
+                        {
+                            "userName": "[parameters('automationUserName')]",
+                            "password": "[parameters('automationPassword')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('jobId')]",
+                        "type": "jobs",
+                        "apiVersion": "2015-01-01-preview",
+                        "location": "[resourceGroup().location]",
+                        "dependsOn": 
+                        [
+                            "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
+                            "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'), '/runbooks/',parameters('runbookName'))]"
+                        ],
+                        "properties": 
+                        {
+                            "runbook": 
+                            {
+                               "name": "[parameters('runbookName')]"
+                            }
+                        }
+                    }
+                ]
+            },
+            
+            {
+                "name": "[parameters('virtualNetworkName')]",
+                "apiVersion": "2017-08-01",
+                "type": "Microsoft.Network/virtualNetworks",
+                "location": "[parameters('location')]",
+                "properties": 
+                {
+                    "addressSpace": 
+                    {
+                        "addressPrefixes": 
+                        [
+                            "[parameters('addressPrefix')]"
+                        ]
+                    },
+                        "subnets": [
+                            {
+                                "name": "[parameters('frontendSubnetName')]",
+                                "properties": 
+                                {
+                                    "addressPrefix": "[parameters('frontendPrefix')]"
+                                }
+                            },
+                            {
+                                "name": "[parameters('backendSubnetName')]",
+                                "properties": 
+                                {
+                                    "addressPrefix": "[parameters('backendPrefix')]"
+                                }
+                            }
+                        ]
+                    }
+            },
+            {
+                "name": "[parameters('publicIpAddressServer')]",
+                "type": "Microsoft.Network/publicIpAddresses",
+                "apiVersion": "2017-08-01",
+                "location": "[parameters('location')]",
+                "properties": 
+                {
+                    "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
+                },
+                "sku": 
+                {
+                    "name": "[parameters('publicIpAddressSku')]"
+                }
+            },
+            {
+                "name": "[parameters('publicIpAddressNonServer')]",
+                "type": "Microsoft.Network/publicIpAddresses",
+                "apiVersion": "2017-08-01",
+                "location": "[parameters('location')]",
+                "properties": 
+                {
+                    "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
+                },
+                "sku": 
+                {
+                    "name": "[parameters('publicIpAddressSku')]"
+                }
+            },
+            {
+                "name": "[parameters('networkSecurityGroupServ')]",
+                "type": "Microsoft.Network/networkSecurityGroups",
+                "apiVersion": "2017-06-01",
+                "location": "[parameters('location')]",
+                "properties": 
+                {
+                    "securityRules": 
+                    [
+                        {
+                            "name": "default-allow-rdp",
+                            "properties": 
+                            {
+                                "priority": 1000,
+                                "protocol": "TCP",
+                                "access": "Allow",
+                                "direction": "Inbound",
+                                "sourceAddressPrefix": "*",
+                                "sourcePortRange": "*",
+                                "destinationAddressPrefix": "*",
+                                "destinationPortRange": "3389"
+                            }
+                        },
+                        {
+                                "name": "custom-allow-8080",
+                                "properties": 
+                                {
+                                    "priority": 2000,
+                                    "protocol": "TCP",
+                                    "access": "Allow",
+                                    "direction": "Inbound",
+                                    "sourceAddressPrefix": "*",
+                                    "sourcePortRange": "*",
+                                    "destinationAddressPrefix": "*",
+                                    "destinationPortRange": "8080"
+                                }
+                            }
+                    ]
+                }
+            },
+            {
+                "name": "[parameters('networkSecurityGroupNonServ')]",
+                "type": "Microsoft.Network/networkSecurityGroups",
+                "apiVersion": "2017-06-01",
+                "location": "[parameters('location')]",
+                "properties": 
+                {
+                    "securityRules": 
+                    [
+                        {
+                            "name": "default-allow-rdp",
+                            "properties": 
+                            {
+                                "priority": 1000,
+                                "protocol": "TCP",
+                                "access": "Allow",
+                                "direction": "Inbound",
+                                "sourceAddressPrefix": "*",
+                                "sourcePortRange": "*",
+                                "destinationAddressPrefix": "*",
+                                "destinationPortRange": "3389"
+                            }
+                        },
+                        {
+                                "name": "custom-allow-8080",
+                                "properties": 
+                                {
+                                    "priority": 2000,
+                                    "protocol": "TCP",
+                                    "access": "Allow",
+                                    "direction": "Inbound",
+                                    "sourceAddressPrefix": "*",
+                                    "sourcePortRange": "*",
+                                    "destinationAddressPrefix": "*",
+                                    "destinationPortRange": "8080"
+                                }
+                            }
+                    ]
+                }
+            },
+            {
+                "name": "[parameters('networkInterfaceServ')]",
+                "type": "Microsoft.Network/networkInterfaces",
+                "apiVersion": "2016-09-01",
+                "location": "[parameters('location')]",
+                "dependsOn": 
+                [
+                    "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+                    "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressServer'))]",
+                    "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupServ'))]"
+                ],
+                "properties": 
+                {
+                    "ipConfigurations": 
+                    [
+                        {
+                            "name": "ipconfig1",
+                            "properties": 
+                            {
+                                "subnet": 
+                                {
+                                    "id": "[variables('subnetRef')]"
+                                },
+                                "privateIPAllocationMethod": "[parameters('publicIpAddressType')]",
+                                "publicIpAddress": 
+                                {
+                                    "id": "[resourceId(parameters('resourceGroup'), 'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressServer'))]"
+                                }
+                            }
+                        }
+                    ],
+                    "networkSecurityGroup": 
+                    {
+                        "id": "[resourceId(parameters('resourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupServ'))]"
+                    }
+                }
+            },
+            {
+                "name": "[parameters('networkInterfaceNonServ')]",
+                "type": "Microsoft.Network/networkInterfaces",
+                "apiVersion": "2016-09-01",
+                "location": "[parameters('location')]",
+                "dependsOn": 
+                [
+                    "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+                    "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressNonServer'))]",
+                    "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupNonServ'))]"
+                ],
+                "properties": 
+                {
+                    "ipConfigurations": 
+                    [
+                        {
+                            "name": "ipconfig1",
+                            "properties": 
+                            {
+                                "subnet": 
+                                {
+                                    "id": "[variables('subnetRef')]"
+                                },
+                                "privateIPAllocationMethod": "[parameters('publicIpAddressType')]",
+                                "publicIpAddress": 
+                                {
+                                    "id": "[resourceId(parameters('resourceGroup'), 'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressNonServer'))]"
+                                }
+                            }
+                        }
+                    ],
+                    "networkSecurityGroup": 
+                    {
+                        "id": "[resourceId(parameters('resourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupNonServ'))]"
+                    }
+                }
+            },
+            {
+                "name": "[parameters('virtualMachineServer')]",
+                "type": "Microsoft.Compute/virtualMachines",
+                "apiVersion": "2016-04-30-preview",
+                "location": "[parameters('location')]",
+                "dependsOn": 
+                [
+                    "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceServ'))]",
+                    "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+                ],
+                "properties": 
+                {
+                    "osProfile": 
+                    {
+                        "computerName": "[parameters('virtualMachineServer')]",
+                        "adminUsername": "[parameters('adminUsername')]",
+                        "adminPassword": "[parameters('adminPassword')]",
+                        "windowsConfiguration": 
+                        {
+                            "provisionVmAgent": "true"
+                        }
+                    },
+                    "hardwareProfile": 
+                    {
+                        "vmSize": "[parameters('virtualMachineSize')]"
+                    },
+                    "storageProfile": 
+                    {
+                        "imageReference": 
+                        {
+                            "publisher": "MicrosoftWindowsServer",
+                            "offer": "WindowsServer",
+                            "sku": "2016-Datacenter",
+                            "version": "latest"
+                        },
+                        "osDisk": 
+                        {
+                            "createOption": "fromImage",
+                            "managedDisk": 
+                            {
+                                "storageAccountType": "[parameters('storageAccountType')]"
+                            }
+                        },
+                        "dataDisks": []
+                    },
+                    "networkProfile": 
+                    {
+                        "networkInterfaces": 
+                        [
+                            {
+                                "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceServ'))]"
+                            }
+                        ]
+                    },
+                    "diagnosticsProfile": 
+                    {
+                        "bootDiagnostics": 
+                        {
+                            "enabled": true,
+                            "storageUri": "[reference(resourceId(parameters('resourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "[parameters('virtualMachineNonServer')]",
+                "type": "Microsoft.Compute/virtualMachines",
+                "apiVersion": "2016-04-30-preview",
+                "location": "[parameters('location')]",
+                "dependsOn": 
+                [
+                    "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceNonServ'))]",
+                    "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+                ],
+                "properties": 
+                {
+                    "osProfile": 
+                    {
+                        "computerName": "[parameters('virtualMachineNonServer')]",
+                        "adminUsername": "[parameters('adminUsername')]",
+                        "adminPassword": "[parameters('adminPassword')]",
+                        "windowsConfiguration": 
+                        {
+                            "provisionVmAgent": "true"
+                        }
+                    },
+                    "hardwareProfile": 
+                    {
+                        "vmSize": "[parameters('virtualMachineSize')]"
+                    },
+                    "storageProfile": 
+                    {
+                        "imageReference": 
+                        {
+                            "publisher": "MicrosoftWindowsServer",
+                            "offer": "WindowsServer",
+                            "sku": "2016-Datacenter",
+                            "version": "latest"
+                        },
+                        "osDisk": 
+                        {
+                            "createOption": "fromImage",
+                            "managedDisk": 
+                            {
+                                "storageAccountType": "[parameters('storageAccountType')]"
+                            }
+                        },
+                        "dataDisks": []
+                    },
+                    "networkProfile": 
+                    {
+                        "networkInterfaces": 
+                        [
+                            {
+                                "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceNonServ'))]"
+                            }
+                        ]
+                    },
+                    "diagnosticsProfile": 
+                    {
+                        "bootDiagnostics": 
+                        {
+                            "enabled": true,
+                            "storageUri": "[reference(resourceId(parameters('resourceGroup'), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
+                        }
+                    }
+                }
+            }       
+        ], 
+        "outputs": 
+        { 
+        
+        } 
+}

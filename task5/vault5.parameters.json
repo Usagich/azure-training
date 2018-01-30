@@ -1,0 +1,88 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "0.5",
+    "parameters": {
+        "location":
+        {
+            "value": "West Europe"
+        },
+        "VMkeyVaultName": 
+        {
+            "value": "VMAdminPassword"
+        },
+        "AAkeyVaultName": 
+        {
+            "value": "AAPassword"
+        },
+        "tenantId": 
+        {
+            "value": "1cc1724e-e74c-4462-9f53-2791c58f8663"
+        },
+        "accessPolicies": 
+        {
+            "value": 
+            [
+                {
+                    "tenantId": "1cc1724e-e74c-4462-9f53-2791c58f8663",
+                    "objectId": "e0ae204e-210e-405f-b424-ed45888c153a",
+                    "permissions": 
+                    {
+                        "keys": ["all"],
+                        "secrets": ["all"]
+                    }
+                },
+                {
+                    "tenantId": "1cc1724e-e74c-4462-9f53-2791c58f8663",
+                    "objectId": "865061b7-5dfa-4862-a160-e4b47bac0864",
+                    "permissions": 
+                    {
+                        "keys": ["all"],
+                        "secrets": ["all"]
+                    }
+                }
+            ]
+        },
+        "vaultSku": 
+        {
+            "value": "Standard"
+        },
+        "enabledForDeployment": 
+        {
+            "value": true
+        },
+        "enabledForTemplateDeployment": 
+        {
+            "value": true
+        },
+        "enableVaultForVolumeEncryption": 
+        {
+            "value": false
+        },
+        "secretsVM": 
+        {
+            "value": 
+            {
+                "secrets": 
+                [						
+                    {
+                        "secretName": "vmpass",
+                        "secretValue": "qqq111QQQ111"
+                    }
+                ]
+            }
+        },
+        "secretsAA": 
+        {
+            "value": 
+            {
+                "secrets": 
+                [						
+                    {
+                        "secretName": "userpass",
+                        "secretValue": "Fafo7145"
+                    }
+                ]
+            }
+        }
+    }
+}

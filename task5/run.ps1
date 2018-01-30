@@ -3,8 +3,10 @@ param
     [string] $resourceGroupName = "task5RG",
     [string] $subscriptionId = "b1d40bc1-2977-4394-b374-fe62498046e2",
     [string] $storageAccountName = "naliaksandra",
-    [string] $containerName = "templates",
-    [string] $templateURL = "https://naliaksandra.blob.core.windows.net/templates/init.json",
+    [string] $containerTemplates = "templates",
+    [string] $containerModules = "modules",
+    [string] $templateURL1 = "https://naliaksandra.blob.core.windows.net/templates/KeyInit5.json",
+    [string] $templateURL2 = "https://naliaksandra.blob.core.windows.net/templates/VMinit5.json",
     [string] $resourceGroupStorage = "storage",
     [string] $automationAccountName = "task5AA"
 )
@@ -16,51 +18,44 @@ Set-AzureRmContext -SubscriptionId $subscriptionId
 New-AzureRmResourceGroup -Name $resourceGroupName -Location "West Europe"
 
 
-#######certificate
-$certName = 'task5SAN'
-$certStore = 'cert:\LocalMachine\My'
-$certPath = '.\task5SAN.pfx'
-$certPwd = ConvertTo-SecureString -String 'P@$$w0rd' -AsPlainText -Force
-
-$cert = New-SelfSignedCertificate -CertStoreLocation $certStore -Subject "CN=Aliaksandra"
-$path = 'cert:\localMachine\my\' + $cert.thumbprint 
-Export-PfxCertificate -cert $path -FilePath $certPath -Password $certPwd
-
-New-AzureRmAutomationCertificate -AutomationAccountName $automationAccountName -Name $certName -Path $certPath –Password $certPwd -Exportable -ResourceGroupName $resourceGroupName
-
-
-####vault creation
-$vaultName = "VMPasswordVault"
-$passwordVM = "qqq111QQQ111"
-
-New-AzureRmKeyVault -VaultName $vaultName -ResourceGroupName $resourceGroupName -Location "West Europe" -EnabledForTemplateDeployment
-Register-AzureRmResourceProvider -ProviderNamespace "Microsoft.KeyVault"
-$secretValue = ConvertTo-SecureString $passwordVM -AsPlainText -Force
-
-#sorry, but you should manually add your access permissions here: 
-#https://portal.azure.com/#resource/subscriptions/b1d40bc1-2977-4394-b374-fe62498046e2/resourceGroups/task4RG/providers/Microsoft.KeyVault/vaults/VMPasswordVault/access_policies
-#then you can create a secret
-Set-AzureKeyVaultSecret -VaultName $vaultName -Name "secret" -SecretValue $secretValue
-
-###$userEmail = (Get-AzureRmContext).Account.id
-###Set-AzureRmKeyVaultAccessPolicy -VaultName $vaultName -ResourceGroupName $resourceGroupName -UserPrincipalName $userEmail -PermissionsToKeys get,update -PermissionsToSecrets set,get -PermissionsToCertificates get -PassThru
-
-
 #####deploy to azure blob
 $storageAccount = Get-AzureRmStorageAccount -ResourceGroupName $resourceGroupStorage -Name $storageAccountName 
 $subscriptionName = (Get-AzureRmSubscription -SubscriptionId $subscriptionId).Name
 Set-AzureRmContext -Subscription $subscriptionName
-#$storageAccountKey = (Get-AzureRmStorageAccountKey -ResourceGroupName $resourseGroupName -Name $storageAccountName).Value[0]
 $context = $storageAccount.Context
-####upload file to blob container
-$filePath = ".\init.json", ".\vmdeploy.json", ".\vmdeploy.parameters.json"
-foreach ($path in $filePath)
+####upload files to blob container
+$filePath = Get-ChildItem -Path "./" -Filter "*.json"
+foreach ($path in $filePath.Name)
 {
     $fileName = $path.Split('\')[-1]
-    Set-AzureStorageBlobContent -File $path -Container $containerName -Blob $fileName -Context $context
+    Set-AzureStorageBlobContent -File $path -Container $containerTemplates -Blob $fileName -Context $context -Force
 }
+Set-AzureStorageBlobContent -File TestConfig.ps1 -Container $containerModules -Blob TestConfig.ps1 -Context $context -Force
+Set-AzureStorageBlobContent -File task5GraphRunbook.graphrunbook -Container $containerModules -Blob task5GraphRunbook.graphrunbook -Context $context -Force
 
+#generate SAS
+$startTime = (Get-Date).ToUniversalTime()
+$expirationTime = $startTime.AddDays(2)
+$sas = $context | New-AzureStorageContainerSASToken -Container $containerTemplates -Permission rwdl -Protocol HttpsOrHttp -StartTime $startTime -ExpiryTime $expirationTime
 
 
 #####run template
-New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $templateURL
+New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $templateURL1 -sas $sas -Force
+New-AzureRmResourceGroupDeployment -ResourceGroupName $resourceGroupName -TemplateFile $templateURL2 -sas $sas
+
+
+######run DSC
+Start-AzureRmAutomationDscCompilationJob -ConfigurationName TestConfig -ResourceGroupName $resourceGroupName -AutomationAccountName $automationAccountName
+$namesDSC = Get-AzureRmAutomationDscNodeConfiguration -ResourceGroupName $resourceGroupName -AutomationAccountName $automationAccountName
+
+####nononononono
+Start-AzureRmAutomationDscNodeConfigurationDeployment -NodeConfigurationName $namesDSC[0].Name -NodeName $namesDSC[0].Name.Split('.')[-1] -ResourceGroupName $resourceGroupName -AutomationAccountName $automationAccountName
+Start-AzureRmAutomationDscNodeConfigurationDeployment -NodeConfigurationName $namesDSC[1].Name -NodeName $namesDSC[1].Name.Split('.')[-1] -ResourceGroupName $resourceGroupName -AutomationAccountName $automationAccountName
+
+Get-AzureRmAutomationDscNodeConfigurationDeployment -ResourceGroupName $resourceGroupName -AutomationAccountName $automationAccountName
+
+
+##### and runbook
+Start-AzureRmAutomationRunbook -ResourceGroupName $resourceGroupName -AutomationAccountName $automationAccountName -Name task5GraphRunbook
+
+

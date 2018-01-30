@@ -2,7 +2,7 @@
 {
     Import-DscResource -ModuleName PSDesiredStateConfiguration
 
-    Node "task5WebServer"
+    Node 'task5webserver'
     {
         WindowsFeature IIS
         {
@@ -12,7 +12,7 @@
         }
     }
 
-    Node "task5NWebServer"
+    Node 'task5nwebserver'
     {
         WindowsFeature IIS
         {
