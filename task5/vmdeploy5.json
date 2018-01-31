@@ -3,133 +3,137 @@
         "contentVersion": "0.5", 
         "parameters": 
         { 
-        "location": 
-        {
-            "type": "string"
-        },
-        "virtualMachineServer": 
-        {
-            "type": "string"
-        },
-        "virtualMachineNonServer": 
-        {
-            "type": "string"
-        },
-        "virtualMachineSize": 
-        {
-            "type": "string"
-        },
-        "adminUsername": 
-        {
-            "type": "string"
-        },
-        "virtualNetworkName": 
-        {
-            "type": "string"
-        },
-        "networkInterfaceServ": 
-        {
-            "type": "string"
-        },
-        "networkInterfaceNonServ": 
-        {
-            "type": "string"
-        },
-        "networkSecurityGroupServ": 
-        {
-            "type": "string"
-        },
-        "networkSecurityGroupNonServ": 
-        {
-            "type": "string"
-        },
-        "adminPassword": {
-            "type": "securestring"
-        },
-        "storageAccountName": 
-        {
-            "type": "string"
-        },
-        "storageAccountType": 
-        {
-            "type": "string"
-        },
-        "addressPrefix": 
-        {
-            "type": "string"
-        },
-        "publicIpAddressServer": 
-        {
-            "type": "string"
-        },
-        "publicIpAddressNonServer": 
-        {
-            "type": "string"
-        },
-        "publicIpAddressType": 
-        {
-            "type": "string"
-        },
-        "publicIpAddressSku": 
-        {
-            "type": "string"
-        },
-        "frontendSubnetName":
-        {
-            "type": "string"
-        },
-        "frontendPrefix":
-        {
-            "type": "string"
-        },
-        "backendSubnetName":
-        {
-            "type": "string"
-        },
-        "backendPrefix":
-        {
-            "type": "string"
-        },
-        "DSCName":
-        {
-                "type": "string"        
-        },
-        "resourceGroup":
-        {
-            "type": "string"
-        },
-        "automationAccountName":
-        {
-            "type": "string"
-        },
-        "runbookName":
-        {
+            "location": 
+            {
                 "type": "string"
-        },
-        "runbookUri":
-        {
+            },
+            "virtualMachineServer": 
+            {
                 "type": "string"
-        },
-        "automationUserName":
-        {
-            "type": "string"
-        },
-        "automationPassword":
-        {
-            "type": "securestring"
-        },
-        "automationCredentialName":
-        {
-            "type": "string"
-        },
-        "jobId":
-        {
-            "type": "string"
-        },
-        "configurationUrl":
-        {
-            "type": "string"
-        }
+            },
+            "virtualMachineNonServer": 
+            {
+                "type": "string"
+            },
+            "virtualMachineSize": 
+            {
+                "type": "string"
+            },
+            "adminUsername": 
+            {
+                "type": "string"
+            },
+            "virtualNetworkName": 
+            {
+                "type": "string"
+            },
+            "networkInterfaceServ": 
+            {
+                "type": "string"
+            },
+            "networkInterfaceNonServ": 
+            {
+                "type": "string"
+            },
+            "networkSecurityGroupServ": 
+            {
+                "type": "string"
+            },
+            "networkSecurityGroupNonServ": 
+            {
+                "type": "string"
+            },
+            "adminPassword": {
+                "type": "securestring"
+            },
+            "storageAccountName": 
+            {
+                "type": "string"
+            },
+            "storageAccountType": 
+            {
+                "type": "string"
+            },
+            "addressPrefix": 
+            {
+                "type": "string"
+            },
+            "publicIpAddressServer": 
+            {
+                "type": "string"
+            },
+            "publicIpAddressNonServer": 
+            {
+                "type": "string"
+            },
+            "publicIpAddressType": 
+            {
+                "type": "string"
+            },
+            "publicIpAddressSku": 
+            {
+                "type": "string"
+            },
+            "frontendSubnetName":
+            {
+                "type": "string"
+            },
+            "frontendPrefix":
+            {
+                "type": "string"
+            },
+            "backendSubnetName":
+            {
+                "type": "string"
+            },
+            "backendPrefix":
+            {
+                "type": "string"
+            },
+            "DSCName":
+            {
+                    "type": "string"        
+            },
+            "resourceGroup":
+            {
+                "type": "string"
+            },
+            "automationAccountName":
+            {
+                "type": "string"
+            },
+            "runbookName":
+            {
+                    "type": "string"
+            },
+            "runbookUri":
+            {
+                    "type": "string"
+            },
+            "automationUserName":
+            {
+                "type": "string"
+            },
+            "automationPassword":
+            {
+                "type": "securestring"
+            },
+            "automationCredentialName":
+            {
+                "type": "string"
+            },
+            "configurationUrl":
+            {
+                "type": "string"
+            },
+            "DSCjobID": 
+            {   
+                "type": "string"
+            },
+            "RBjobID": 
+            {   
+                "type": "string"
+            }  
         }, 
         "variables": 
         { 
@@ -151,7 +155,7 @@
                 "tags": {},
                 "properties": {}
 
-            },
+            },     
             {
                 "name": "[parameters('automationAccountName')]",
                 "type": "Microsoft.Automation/automationAccounts",
@@ -240,14 +244,14 @@
                         }
                     },
                     {
-                        "name": "[parameters('jobId')]",
+                        "name": "[parameters('RBjobID')]",
                         "type": "jobs",
                         "apiVersion": "2015-01-01-preview",
                         "location": "[resourceGroup().location]",
                         "dependsOn": 
                         [
                             "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
-                            "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'), '/runbooks/',parameters('runbookName'))]"
+                            "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'), '/runbooks/', parameters('runbookName'))]"
                         ],
                         "properties": 
                         {
@@ -256,7 +260,24 @@
                                "name": "[parameters('runbookName')]"
                             }
                         }
+                    },
+                    {
+                        "name": "[parameters('DSCjobID')]",
+                        "type": "Compilationjobs",
+                        "apiVersion": "2015-10-31",
+                        "location": "parameters('automationRegionId')]",
+                        "tags": {},
+                        "dependsOn": [
+                            "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]",
+                            "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'),'/Configurations/', parameters('DSCName'))]"
+                        ],
+                        "properties": {
+                            "configuration": {
+                                "name": "[parameters('DSCName')]"
+                            }
+                        }
                     }
+    
                 ]
             },
             
