@@ -1,0 +1,33 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", 
+    "contentVersion": "0.7",
+    "parameters": 
+    {
+        "sas":
+        {
+            "type": "string"
+        }
+    },
+    "resources": 
+    [
+        {
+            "name": "creatingVaults",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "properties": 
+            {
+                "mode": "incremental",
+                "templateLink": 
+                {
+                  "uri":"[concat('https://naliaksandra.blob.core.windows.net/templates/vault7.json', parameters('sas'))]",
+                  "contentVersion":"0.7"
+                },
+               "parametersLink": 
+               {
+                  "uri":"[concat('https://naliaksandra.blob.core.windows.net/templates/vault7.parameters.json', parameters('sas'))]",
+                  "contentVersion":"0.7"
+               }
+            }
+        }
+    ]
+}

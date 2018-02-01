@@ -1,0 +1,83 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "0.7",
+    "parameters": {
+        "location":
+        {
+            "type": "string"
+        },
+        "VMkeyVaultName": 
+        {
+            "type": "string"
+        },
+        "AAkeyVaultName": 
+        {
+            "type": "string"
+        },
+        "tenantId": 
+        {
+            "type": "string"
+        },
+        "accessPolicies": 
+        {
+            "type": "array"
+        },
+        "vaultSku": 
+        {
+            "type": "string"
+        },
+        "enabledForDeployment": 
+        {
+            "type": "bool"
+        },
+        "enabledForTemplateDeployment": 
+        {
+            "type": "bool"
+        },
+        "enableVaultForVolumeEncryption": 
+        {
+            "type": "bool"
+        },
+        "secretsVM": 
+        {
+            "type": "secureObject"
+        }
+    },
+    "resources": 
+    [
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "name": "[parameters('VMkeyVaultName')]",
+            "apiVersion": "2015-06-01",
+            "location": "[parameters('location')]",
+            "properties": {
+                "enabledForDeployment": "[parameters('enabledForDeployment')]",
+                "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
+                "enabledForVolumeEncryption": "[parameters('enableVaultForVolumeEncryption')]",
+                "tenantId": "[parameters('tenantId')]",
+                "accessPolicies": "[parameters('accessPolicies')]",
+                "sku": {
+                    "name": "[parameters('vaultSku')]",
+                    "family": "A"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "name": "[concat(parameters('VMkeyVaultName'), '/', parameters('secretsVM').secrets[copyIndex()].secretName)]",
+            "apiVersion": "2015-06-01",
+            "properties": {
+                "value": "[parameters('secretsVM').secrets[copyIndex()].secretValue]"
+            },
+            "dependsOn": 
+            [
+                "[concat('Microsoft.KeyVault/vaults/', parameters('VMkeyVaultName'))]"
+            ],
+            "copy": 
+            {
+                "name": "secretsCopy",
+                "count": "[length(parameters('secretsVM').secrets)]"
+            }
+        }
+    ]
+}

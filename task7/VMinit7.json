@@ -1,0 +1,116 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", 
+    "contentVersion": "0.7",
+    "parameters": 
+    {
+        "sas":
+        {
+            "type": "string"
+        }
+    },
+    "resources": 
+    [
+        {
+           "apiVersion": "2017-05-10",
+           "name": "deployProvisionVM",
+           "type": "Microsoft.Resources/deployments",
+           "properties": 
+           {
+               "mode": "incremental",
+               "templateLink": 
+               {
+                 "uri":"[concat('https://naliaksandra.blob.core.windows.net/templates/vmdeploy7.json', parameters('sas'))]",
+                 "contentVersion":"0.7"
+               },
+               "parameters": 
+               {
+                   "location": 
+                   {
+                       "value": "West Europe"
+                   },
+                   "virtualMachineName": 
+                   {
+                       "value": "task7VM"
+                   },
+                   "virtualMachineSize": 
+                   {
+                       "value": "Standard_A1"
+                   },
+                   "adminUsername": 
+                   {
+                       "value": "naliaksandra"
+                   },
+                   "virtualNetworkName": 
+                   {
+                       "value": "task7vnet"
+                   },
+                   "networkInterfaceName": 
+                   {
+                       "value": "task7networkInterface"
+                   },
+                   "networkSecurityGroupName": 
+                   {
+                       "value": "task7securityGroup"
+                   },
+                   "storageAccountVM": 
+                   {
+                       "value": "task7storaccvm"
+                   },
+                   "storageAccountRestore": 
+                   {
+                       "value": "task7storaccres"
+                   },
+                   "storageAccountType": 
+                   {
+                       "value": "Standard_LRS"
+                   },
+                   "addressPrefix": 
+                   {
+                       "value": "192.168.0.0/16"
+                   },
+                   "publicIpAddressName": 
+                   {
+                       "value": "task7publicIP"
+                   },
+                   "publicIpAddressType": 
+                   {
+                       "value": "Dynamic"
+                   },
+                   "publicIpAddressSku": 
+                   {
+                       "value": "Basic"
+                   },
+                   "frontendSubnetName":
+                   {
+                       "value": "frontend"
+                   },
+                   "frontendPrefix":
+                   {
+                       "value": "192.168.100.0/24"
+                   },
+                   "backendSubnetName":
+                   {
+                       "value": "backend"
+                   },
+                   "backendPrefix":
+                   {
+                       "value": "192.168.200.0/24"
+                   },
+                   "resourceGroup":
+                   {
+                       "value": "task7RG"
+                   },
+                   "adminPassword": 
+                   {
+                       "reference": {
+                           "keyVault": {
+                             "id": "/subscriptions/b1d40bc1-2977-4394-b374-fe62498046e2/resourceGroups/task7RG/providers/Microsoft.KeyVault/vaults/VMAdminPassword"
+                           },
+                           "secretName": "vmpass"
+                         }
+                   }
+                }
+            }
+        }
+    ]
+}
