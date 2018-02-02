@@ -147,7 +147,11 @@
                    },
                    "timeZone":
                    {
-                       "value": "UTC+03:00"
+                       "value": "UTC"
+                   },
+                   "existingVirtualMachines": 
+                   {
+                       "value": ["task7VM"]
                    }
                 }
             }

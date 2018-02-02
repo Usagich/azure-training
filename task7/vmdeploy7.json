@@ -121,12 +121,20 @@
             "timeZone":
             {
                 "type": "string"
+            },
+            "existingVirtualMachines":
+            {
+                "type": "array"
             }
         }, 
         "variables": 
         { 
-        "vnetId": "[resourceId(parameters('resourceGroupName'),'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('frontendSubnetName'))]"
+            "vnetId": "[resourceId(parameters('resourceGroupName'),'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+            "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('frontendSubnetName'))]",
+            "backupFabric": "Azure",
+            "v2VmType": "Microsoft.Compute/virtualMachines",
+            "v2VmContainer": "iaasvmcontainer;iaasvmcontainerv2;",
+            "v2Vm": "vm;iaasvmcontainerv2;"
         }, 
         "resources": 
         [ 
@@ -340,7 +348,8 @@
                 {
                   "name": "RS0",
                   "tier": "Standard"
-                }
+                },
+                "properties": {}
             },
             {
                 "apiVersion": "2016-06-01",
@@ -431,12 +440,10 @@
                 }
             },
             {
-                "name": "task7vaultbakupvm",
-                "name": "[concat(parameters('existingRecoveryServicesVault'), '/', variables('backupFabric'), '/', variables('v2VmContainer'), concat(parameters('existingVirtualMachinesResourceGroup'),';',parameters('existingVirtualMachines')[copyIndex()]), '/', variables('v2Vm'), concat(parameters('existingVirtualMachinesResourceGroup'),';',parameters('existingVirtualMachines')[copyIndex()]))]",
-
+                "name": "[concat(parameters('vaultName'), '/', variables('backupFabric'), '/', variables('v2VmContainer'), concat(parameters('resourceGroupName'),';',parameters('existingVirtualMachines')[copyIndex()]), '/', variables('v2Vm'), concat(parameters('resourceGroupName'),';',parameters('existingVirtualMachines')[copyIndex()]))]",
                 "apiVersion": "2016-06-01",
                 "location": "[parameters('location')]",
-                "type": "protectionContainers/protectedItems",
+                "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
                 "copy": 
                 {
                     "name": "task7VMback",
