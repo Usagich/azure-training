@@ -5,10 +5,9 @@
     [string] $storageAccountName = "naliaksandra",
     [string] $containerTemplates = "templates",
     [string] $containerModules = "modules",
-    [string] $templateURL1 = "https://naliaksandra.blob.core.windows.net/templates/KeyInit5.json",
-    [string] $templateURL2 = "https://naliaksandra.blob.core.windows.net/templates/VMinit5.json",
-    [string] $resourceGroupStorage = "storage",
-    [string] $automationAccountName = "task7AA"
+    [string] $templateURL1 = "https://naliaksandra.blob.core.windows.net/templates/KeyInit7.json",
+    [string] $templateURL2 = "https://naliaksandra.blob.core.windows.net/templates/VMinit7.json",
+    [string] $resourceGroupStorage = "storage"
 )
 
 Login-AzureRmAccount 
@@ -20,8 +19,6 @@ New-AzureRmResourceGroup -Name $ResourceGroupName -Location "West Europe"
 
 #####deploy to azure blob
 $storageAccount = Get-AzureRmStorageAccount -ResourceGroupName $ResourceGroupStorage -Name $StorageAccountName 
-$subscriptionName = (Get-AzureRmSubscription -SubscriptionId $SubscriptionId).Name
-Set-AzureRmContext -Subscription $subscriptionName
 $context = $storageAccount.Context
 ####upload files to blob container
 $filePath = Get-ChildItem -Path "./" -Filter "*.json"
@@ -57,11 +54,7 @@ foreach ($node in $namesDSC)
 Start-AzureRmAutomationRunbook -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName -Name task5GraphRunbook
 
 
-Here is MFU related to 7th task:
-1.	Watch demo 
-2.	Try to reproduce all steps manually
+
 3.	Create ARM template which should do the same what was described in demo.
-a.	Do not forget to use template reference documentation
-b.	You can also find some useful info here
 4.	Restore VMs disks to another storage account ( via PowerShell commandlets) with original names of disks:
 a.	By default each recovered disk is located on targeted storage account in separate container and named not like original vhd. You have to review all concomitant json files in specified container to find out the necessary details.

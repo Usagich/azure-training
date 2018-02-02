@@ -10,10 +10,6 @@
         {
             "type": "string"
         },
-        "AAkeyVaultName": 
-        {
-            "type": "string"
-        },
         "tenantId": 
         {
             "type": "string"
