@@ -16,7 +16,6 @@ Set-AzureRmContext -SubscriptionId $SubscriptionId
 ##resource group creation
 New-AzureRmResourceGroup -Name $ResourceGroupName -Location "West Europe"
 
-
 #####deploy to azure blob
 $storageAccount = Get-AzureRmStorageAccount -ResourceGroupName $ResourceGroupStorage -Name $StorageAccountName 
 $context = $storageAccount.Context
@@ -27,8 +26,7 @@ foreach ($path in $filePath.Name)
     $fileName = $path.Split('\')[-1]
     Set-AzureStorageBlobContent -File $path -Container $ContainerTemplates -Blob $fileName -Context $context -Force
 }
-Set-AzureStorageBlobContent -File TestConfig.ps1 -Container $ContainerModules -Blob TestConfig.ps1 -Context $context -Force
-Set-AzureStorageBlobContent -File task5GraphRunbook.graphrunbook -Container $ContainerModules -Blob task5GraphRunbook.graphrunbook -Context $context -Force
+
 
 #generate SAS
 $startTime = (Get-Date).ToUniversalTime()
@@ -38,8 +36,7 @@ $sas = $context | New-AzureStorageContainerSASToken -Container $ContainerTemplat
 
 #####run template
 New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL1 -sas $sas -Force
-New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL2 -sas $sas -guid1 (new-guid) -guid2 (new-guid)
-
+New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL2 -sas $sas 
 
 ######run DSC
 $namesDSC = Get-AzureRmAutomationDscNodeConfiguration -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName
