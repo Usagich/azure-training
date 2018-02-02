@@ -440,7 +440,7 @@
                 }
             },
             {
-                "name": "[concat(parameters('vaultName'), '/', variables('backupFabric'), '/', variables('v2VmContainer'), concat(parameters('resourceGroupName'),';',parameters('existingVirtualMachines')[copyIndex()]), '/', variables('v2Vm'), concat(parameters('resourceGroupName'),';',parameters('existingVirtualMachines')[copyIndex()]))]",
+                "name": "task7VMbackup",
                 "apiVersion": "2016-06-01",
                 "location": "[parameters('location')]",
                 "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
