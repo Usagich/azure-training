@@ -42,5 +42,7 @@ New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -Templa
 
 #3.	Create ARM template which should do the same what was described in demo.
 #4.	Restore VMs disks to another storage account ( via PowerShell commandlets) with original names of disks:
-#a.	By default each recovered disk is located on targeted storage account in separate container and named not like original vhd. You have to review all concomitant json files in specified container to find out the necessary details.
+#a.	By default each recovered disk is located on targeted storage account in separate container and named not like original vhd. 
+##You have to review all concomitant json files in specified container to find out the necessary details.
 
+Find-AzureRmResource 
