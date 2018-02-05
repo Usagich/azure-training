@@ -152,6 +152,10 @@
                    "existingVirtualMachines": 
                    {
                        "value": ["task7VM"]
+                   },
+                   "vaultBackupName":
+                   {
+                       "value": "task7VMbackup"
                    }
                 }
             }

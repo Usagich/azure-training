@@ -38,20 +38,9 @@ $sas = $context | New-AzureStorageContainerSASToken -Container $ContainerTemplat
 New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL1 -sas $sas -Force
 New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL2 -sas $sas 
 
-######run DSC
-$namesDSC = Get-AzureRmAutomationDscNodeConfiguration -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName
-
-foreach ($node in $namesDSC)
-{
-    Register-AzureRmAutomationDscNode -AzureVMName $node.Name.Split('.')[-1] -NodeConfigurationName $node.Name -ResourceGroupName $ResourceGroupName -AutomationAccountName $automationAccountName
-
-}
-
-##### and runbook
-Start-AzureRmAutomationRunbook -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName -Name task5GraphRunbook
 
 
+#3.	Create ARM template which should do the same what was described in demo.
+#4.	Restore VMs disks to another storage account ( via PowerShell commandlets) with original names of disks:
+#a.	By default each recovered disk is located on targeted storage account in separate container and named not like original vhd. You have to review all concomitant json files in specified container to find out the necessary details.
 
-3.	Create ARM template which should do the same what was described in demo.
-4.	Restore VMs disks to another storage account ( via PowerShell commandlets) with original names of disks:
-a.	By default each recovered disk is located on targeted storage account in separate container and named not like original vhd. You have to review all concomitant json files in specified container to find out the necessary details.

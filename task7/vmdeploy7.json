@@ -125,6 +125,10 @@
             "existingVirtualMachines":
             {
                 "type": "array"
+            },
+            "vaultBackupName":
+            {
+                "type": "string"
             }
         }, 
         "variables": 
@@ -440,7 +444,7 @@
                 }
             },
             {
-                "name": "task7VMbackup",
+                "name": "[concat(parameters('vaultName'), '/Azure/', 'IaasVMContainer;iaasvmcontainerv2;', parameters('resourceGroupName'),';',parameters('virtualMachineName'), '/VM;iaasvmcontainerv2;', parameters('resourceGroupName'), ';', parameters('virtualMachineName'))]",
                 "apiVersion": "2016-06-01",
                 "location": "[parameters('location')]",
                 "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
@@ -453,7 +457,8 @@
                 {
                     "protectedItemType": "Microsoft.Compute/virtualMachines",
                     "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies',parameters('vaultName'),parameters('vaultPolicyName') )]",
-                    "sourceResourceId": "[resourceId(subscription().subscriptionId,parameters('resourceGroupName'),'Microsoft.Compute/virtualMachines',parameters('virtualMachineName')[copyIndex()])]"
+                    "sourceResourceId": "[resourceId(subscription().subscriptionId,parameters('resourceGroupName'),'Microsoft.Compute/virtualMachines',parameters('virtualMachineName'))]"
+                    
                 },
                 "dependsOn": 
                 [
