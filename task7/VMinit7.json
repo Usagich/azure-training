@@ -156,10 +156,6 @@
                    "vaultBackupName":
                    {
                        "value": "task7VMbackup"
-                   },
-                   "vaultNotification":
-                   {
-                       "value": "task7recoveryEmails"
                    }
                 }
             }
