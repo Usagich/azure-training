@@ -320,7 +320,8 @@
                             "managedDisk": 
                             {
                                 "storageAccountType": "[parameters('storageAccountType')]"
-                            }
+                            },
+							"diskSizeGB": 30,
                         },
                         "dataDisks": []
                     },

@@ -34,7 +34,7 @@
                    },
                    "virtualMachineSize": 
                    {
-                       "value": "Standard_A1"
+                       "value": "Basic_A0"
                    },
                    "adminUsername": 
                    {
