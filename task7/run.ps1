@@ -39,14 +39,13 @@ $sas = $context | New-AzureStorageContainerSASToken -Container $ContainerTemplat
 #####run template
 New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL1 -sas $sas -Force
 New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL2 -sas $sas 
- 
-Set-AzureRmRecoveryServicesAsrAlertSetting -CustomEmailAddress "naliaksandra.azure@gmail.com" -EmailSubscriptionOwner 
 
 
 ##set RSB context
 $vaultName = Get-AzureRmRecoveryServicesVault -ResourceGroupName $ResourceGroupName -Name "task7BSV"
 $backupContext = Set-AzureRmRecoveryServicesVaultContext -Vault $vaultName
- 
+
+
 
 ##do backup
 $namedContainer = Get-AzureRmRecoveryServicesBackupContainer -ContainerType AzureVM -Status Registered -FriendlyName "task7VM" 
