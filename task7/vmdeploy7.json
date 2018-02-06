@@ -361,11 +361,10 @@
                         "type": "replicationAlertSettings",
                         "apiVersion": "2016-08-10",
                         "properties": {
-                          "sendToOwners": "DoNotSend",
+                          "sendToOwners": "Yes",
                           "customEmailAddresses": 
                           [
-                            "naliaksandra.azure@gmail.com",
-                            "Dzianis_Sinevich@epam.com"
+                            "naliaksandra.azure@gmail.com"
                           ],
                           "locale": ""
                         },
