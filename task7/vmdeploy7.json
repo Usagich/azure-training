@@ -121,18 +121,6 @@
             "timeZone":
             {
                 "type": "string"
-            },
-            "existingVirtualMachines":
-            {
-                "type": "array"
-            },
-            "vaultBackupName":
-            {
-                "type": "string"
-            },
-            "vaultNotification":
-            {
-                "type": "string"
             }
         }, 
         "variables": 
@@ -355,23 +343,6 @@
                 },
                 "properties": {}
             },
-			{
-                        "name": "defaultAlertSetting",
-                        "type": "Microsoft.RecoveryServices/vaults/replicationAlertSettings",
-                        "apiVersion": "2016-08-10",
-                        "properties": {
-                          "sendToOwners": "Yes",
-                          "customEmailAddresses": 
-                          [
-                            "naliaksandra.azure@gmail.com"
-                          ],
-                          "locale": ""
-                        },
-                        "dependsOn":
-                        [
-                            "[concat('Microsoft.RecoveryServices/vaults/', parameters('vaultName'))]" 
-                        ]
-            }
             {
                 "apiVersion": "2016-06-01",
                 "name": "[concat(parameters('vaultName'), '/', parameters('vaultPolicyName'))]",
