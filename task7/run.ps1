@@ -17,7 +17,7 @@ Login-AzureRmAccount
 Set-AzureRmContext -SubscriptionId $SubscriptionId
 
 ##resource group creation
-New-AzureRmResourceGroup -Name $ResourceGroupName -Location "West Europe"
+New-AzureRmResourceGroup -Name $ResourceGroupName -Location "West Europe" -Force
 
 
 #####deploy to azure blob
@@ -101,15 +101,24 @@ foreach ($blob in $blobList)
         $blobName = $blob.Name
     }
 }
-Get-AzureStorageBlobContent -Container $diskContainer -Blob $blobName -Destination $destinationPath
+Get-AzureStorageBlobContent -Container $diskContainer -Blob $blobName -Destination $destinationPath -Context $storageContext
 
 ##getting NAME parameter from json
-$jsonContent = (Get-Content -Encoding Ascii $destinationPath) | ConvertFrom-Json
+Get-Content $destinationPath -Encoding Byte | ? {$_ -ne 0x00} | Set-Content temp.txt -Encoding Byte
+$jsonContent = (Get-Content -Encoding Ascii temp.txt) | ConvertFrom-Json
+
 $diskName = $jsonContent."properties.storageProfile".osDisk.name
 
 ##creating new container for renamed vhd 
 New-AzureStorageContainer -Name vhd -Permission Blob -Context $storageContext
 
+foreach ($blob in $blobList)
+{
+    if( $blob.Name -like "*.vhd")
+    {
+        $blobName = $blob.Name
+    }
+}
 ##copying vhd to new container with new name
 Start-AzureStorageBlobCopy -SrcContainer $diskContainer -DestContainer vhd -SrcBlob $blobName -DestBlob $diskName -Context $storageContext -DestContext $storageContext 
 ##deleting old container

@@ -5,11 +5,13 @@
     { 
         "location":
         {
-            "value": "West Europe"
+            "type": "string",
+            "defaultValue": "West Europe"
         },
         "vaultName":
         {
-            "value": "task7BSV"
+            "type": "string",
+            "defaultValue": "task7BSV"
         }
     }, 
     "resources": 
@@ -37,7 +39,8 @@
                         [
                             "naliaksandra.azure@gmail.com"
                         ],
-                        "locale": ""
+                        "locale": "",
+                        "sendToOwners": ""                    
                     },
                     "dependsOn":
                     [
