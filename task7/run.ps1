@@ -7,6 +7,8 @@
     [string] $ContainerModules = "modules",
     [string] $TemplateURL1 = "https://naliaksandra.blob.core.windows.net/templates/KeyInit7.json",
     [string] $TemplateURL2 = "https://naliaksandra.blob.core.windows.net/templates/VMinit7.json",
+    [string] $TemplateURL3 = "https://naliaksandra.blob.core.windows.net/templates/BackupInit7.json",
+    [string] $TemplateURL4 = "https://naliaksandra.blob.core.windows.net/templates/emailsNoification.json",
     [string] $ResourceGroupStorage = "storage"
 )
 
@@ -39,7 +41,12 @@ $sas = $context | New-AzureStorageContainerSASToken -Container $ContainerTemplat
 #####run template
 New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL1 -sas $sas -Force
 New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL2 -sas $sas 
-
+while((Get-AzureRmVM -ResourceGroupName $ResourceGroupName).ProvisioningState -notlike "Succeeded")
+{
+    sleep 15
+}
+New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL3 -sas $sas 
+New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateURL4
 
 ##set RSB context
 $vaultName = Get-AzureRmRecoveryServicesVault -ResourceGroupName $ResourceGroupName -Name "task7BSV"

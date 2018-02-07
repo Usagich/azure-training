@@ -1,0 +1,54 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", 
+    "contentVersion": "0.7", 
+    "parameters": 
+    { 
+        "location":
+        {
+            "value": "West Europe"
+        },
+        "vaultName":
+        {
+            "value": "task7BSV"
+        }
+    }, 
+    "resources": 
+    [ 
+        {
+            "name": "[parameters('vaultName')]",
+            "type": "Microsoft.RecoveryServices/vaults",
+            "apiVersion": "2015-11-10",
+            "location": "[parameters('location')]",
+            "sku": 
+            {
+              "name": "RS0",
+              "tier": "Standard"
+            },
+            "properties": {},
+            "resources":
+            [
+                {
+                    "name": "defaultAlertSetting",
+                    "type": "replicationAlertSettings",
+                    "apiVersion": "2016-08-10",
+                    "properties": 
+                    {
+                        "customEmailAddresses": 
+                        [
+                            "naliaksandra.azure@gmail.com"
+                        ],
+                        "locale": ""
+                    },
+                    "dependsOn":
+                    [
+                        "[concat('Microsoft.RecoveryServices/vaults/', parameters('vaultName'))]" 
+                    ]
+                }
+            ]
+        }
+    ], 
+    "outputs": 
+    { 
+    
+    } 
+}

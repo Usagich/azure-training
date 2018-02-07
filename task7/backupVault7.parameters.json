@@ -1,0 +1,58 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "0.7",
+    "parameters": {
+        "location":
+        {
+            "value": "West Europe"
+        },
+        "vaultName":
+        {
+            "value": "task7BSV"
+        },
+        "vaultPolicyName":
+        {
+            "value": "task7BP"
+        },
+        "vaultScheduleRunTimes":
+        {
+            "value": [ "2018-02-02T09:30:00Z" ]
+        },
+        "vaultDailyRetentionDurationCount":
+        {
+            "value": 30
+        },
+        "vaultDaysOfTheWeek":
+        {
+            "value": [ "Friday", "Saturday", "Sunday" ]
+        },
+        "vaultWeeklyRetentionDurationCount":
+        {
+            "value": 15
+        },
+        "vaultMonthlyRetentionDurationCount":
+        {
+            "value": 15
+        },
+        "vaultMonthsOfYear":
+        {
+            "value": [ "February" ]
+        },
+        "vaultYearlyRetentionDurationCount":
+        {
+            "value": 2
+        },
+        "timeZone":
+        {
+            "value": "UTC"
+        },
+        "virtualMachineName": 
+        {
+            "value": "task7VM"
+        },
+        "resourceGroupName":
+        {
+            "value": "task7RG"
+        }
+    }
+}

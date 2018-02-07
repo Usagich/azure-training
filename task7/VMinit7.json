@@ -34,7 +34,7 @@
                    },
                    "virtualMachineSize": 
                    {
-                       "value": "Standard_A1"
+                       "value": "Standard_A1_v2"
                    },
                    "adminUsername": 
                    {
@@ -102,52 +102,14 @@
                    },
                    "adminPassword": 
                    {
-                       "reference": {
-                           "keyVault": {
+                       "reference": 
+                       {
+                           "keyVault": 
+                           {
                              "id": "/subscriptions/b1d40bc1-2977-4394-b374-fe62498046e2/resourceGroups/task7RG/providers/Microsoft.KeyVault/vaults/VMAdminPassword"
                            },
                            "secretName": "vmpass"
-                         }
-                   },
-                   "vaultName":
-                   {
-                       "value": "task7BSV"
-                   },
-                   "vaultPolicyName":
-                   {
-                       "value": "task7BP"
-                   },
-                   "vaultScheduleRunTimes":
-                   {
-                       "value": [ "2018-02-02T09:30:00Z" ]
-                   },
-                   "vaultDailyRetentionDurationCount":
-                   {
-                       "value": 30
-                   },
-                   "vaultDaysOfTheWeek":
-                   {
-                       "value": [ "Friday", "Saturday", "Sunday" ]
-                   },
-                   "vaultWeeklyRetentionDurationCount":
-                   {
-                       "value": 15
-                   },
-                   "vaultMonthlyRetentionDurationCount":
-                   {
-                       "value": 15
-                   },
-                   "vaultMonthsOfYear":
-                   {
-                       "value": [ "February" ]
-                   },
-                   "vaultYearlyRetentionDurationCount":
-                   {
-                       "value": 2
-                   },
-                   "timeZone":
-                   {
-                       "value": "UTC"
+                       }
                    }
                 }
             }
