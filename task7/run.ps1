@@ -52,8 +52,6 @@ New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -Templa
 $vaultName = Get-AzureRmRecoveryServicesVault -ResourceGroupName $ResourceGroupName -Name "task7BSV"
 $backupContext = Set-AzureRmRecoveryServicesVaultContext -Vault $vaultName
 
-
-
 ##do backup
 $namedContainer = Get-AzureRmRecoveryServicesBackupContainer -ContainerType AzureVM -Status Registered -FriendlyName "task7VM" 
 $item = Get-AzureRmRecoveryServicesBackupItem -Container $namedContainer -WorkloadType AzureVM 
@@ -82,6 +80,7 @@ while ((Get-AzureRmRecoveryServicesBackupJob)[0].EndTime -eq $null)
     sleep (15)
 }
 
+Write-Host "starting to move backup with new name"
 
 ##creating storage account context
 $storageAccountKey = (Get-AzureRmStorageAccountKey -ResourceGroupName $ResourceGroupStorage -Name $StorageAccountName).Value[0]
@@ -111,7 +110,7 @@ $diskName = $jsonContent."properties.storageProfile".osDisk.name
 
 ##creating new container for renamed vhd 
 New-AzureStorageContainer -Name vhd -Permission Blob -Context $storageContext
-
+##getting vhd name
 foreach ($blob in $blobList)
 {
     if( $blob.Name -like "*.vhd")
@@ -122,8 +121,9 @@ foreach ($blob in $blobList)
 ##copying vhd to new container with new name
 Start-AzureStorageBlobCopy -SrcContainer $diskContainer -DestContainer vhd -SrcBlob $blobName -DestBlob $diskName -Context $storageContext -DestContext $storageContext 
 ##deleting old container
-Remove-AzureStorageBlob -Container $diskContainer -Context $storageContext -Blob $blobName 
+Remove-AzureStorageContainer -Name $diskContainer -Force
+#Remove-AzureStorageBlob -Container $diskContainer -Context $storageContext -Blob $blobName 
+Remove-Item temp.txt
+Remove-Item $destinationPath
  
- 
-##whooho
 Write-Host "Restoring is done! Now you can check storage account 'naliaksandra'"

@@ -178,7 +178,8 @@
             },
             "dependsOn": 
             [
-                "[concat('Microsoft.RecoveryServices/vaults/', parameters('vaultName'))]"    
+                "[concat('Microsoft.RecoveryServices/vaults/', parameters('vaultName'))]",
+                "[concat('Microsoft.RecoveryServices/vaults/', parameters('vaultName'), '/backupPolicies/', parameters('vaultPolicyName'))]"
             ]
         }
     ], 
