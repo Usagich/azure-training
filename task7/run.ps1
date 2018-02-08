@@ -121,8 +121,8 @@ foreach ($blob in $blobList)
 ##copying vhd to new container with new name
 Start-AzureStorageBlobCopy -SrcContainer $diskContainer -DestContainer vhd -SrcBlob $blobName -DestBlob $diskName -Context $storageContext -DestContext $storageContext 
 ##deleting old container
-Remove-AzureStorageContainer -Name $diskContainer -Force
-#Remove-AzureStorageBlob -Container $diskContainer -Context $storageContext -Blob $blobName 
+Remove-AzureStorageContainer -Name $diskContainer -Force -Context $storageContext
+Remove-AzureStorageBlob -Container $diskContainer -Context $storageContext -Blob $blobName 
 Remove-Item temp.txt
 Remove-Item $destinationPath
  
