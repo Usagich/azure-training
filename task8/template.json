@@ -75,6 +75,7 @@
             "properties": 
             {
                 "administratorLogin": "naliaksandra",
+                "administratorLoginPassword": "qqq111QQQ111",
                 "version": "12.0"
             },
             "dependsOn": []
