@@ -8,11 +8,10 @@
             "defaultValue": "West Europe",
             "type": "string"
         },
-        "appName": 
-        {
-            "defaultValue": "DotNetAppSqlDb20180208050232",
-            "type": "string"
-        },
+      "appName": {
+        "defaultValue": "dotnetappsqldb20180208050232",
+        "type": "string"
+      },
         "webConfigName": 
         {
             "defaultValue": "web",
@@ -41,11 +40,10 @@
             "defaultValue": "AllowAllAzureIPs",
             "type": "String"
         },
-        "databaseName": 
-        {
-            "defaultValue": "DotNetAppSqlDb20180208050232_db",
-            "type": "String"
-        },
+      "databaseName": {
+        "defaultValue": "dotnetappsqldb20180208050232_db",
+        "type": "String"
+      },
         "backupLongTermRetentionVaults_RegisteredVault_name": 
         {
             "defaultValue": "RegisteredVault",
@@ -180,7 +178,7 @@
             "scale": null,
             "properties": 
             {
-                "auditingState": "New",
+                "auditingState": "Disabled",
                 "eventTypesToAudit": "PlainSQL_Success,PlainSQL_Failure,ParameterizedSQL_Success,ParameterizedSQL_Failure,StoredProcedure_Success,StoredProcedure_Failure,Login_Success,Login_Failure,TransactionManagement_Success,TransactionManagement_Failure",
                 "storageAccountName": null,
                 "storageAccountKey": null,
@@ -194,19 +192,6 @@
             },
             "dependsOn": 
             [
-                "[resourceId('Microsoft.Sql/servers', concat(parameters('appName'), 'server'))]"
-            ]
-        },
-        {
-            "type": "Microsoft.Sql/servers/backupLongTermRetentionVaults",
-            "name": "[concat(concat(parameters('appName'), 'server'), '/', parameters('backupLongTermRetentionVaults_RegisteredVault_name'))]",
-            "apiVersion": "2014-04-01",
-            "location": "[parameters('location')]",
-            "scale": null,
-            "properties": {
-                "recoveryServicesVaultResourceId": null
-            },
-            "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', concat(parameters('appName'), 'server'))]"
             ]
         },
@@ -253,8 +238,7 @@
             "scale": null,
             "properties": 
             {
-                "databaseId": "69f1e5aa-9fa6-4688-b682-07d20b7a4346",
-                "edition": "System",
+                 "edition": "System",
                 "status": "Online",
                 "serviceLevelObjective": "System0",
                 "collation": "SQL_Latin1_General_CP1_CI_AS",
