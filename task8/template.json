@@ -1,0 +1,452 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": 
+    {
+        "location":
+        {
+            "defaultValue": "West Europe",
+            "type": "string"
+        },
+        "appName": 
+        {
+            "defaultValue": "DotNetAppSqlDb20180208050232",
+            "type": "string"
+        },
+        "webConfigName": 
+        {
+            "defaultValue": "web",
+            "type": "string"
+        },
+        "repoURL": 
+        {
+            "defaultValue": "https://github.com/Usagich/testSqlApp.git",
+            "type": "string"
+        },
+        "appServicePlanName": 
+        {
+            "defaultValue": "task8ServicePlan",
+            "type": "String"
+        },
+        "keys_ServiceManaged_name": {
+            "defaultValue": "ServiceManaged",
+            "type": "String"
+        },
+        "auditingPoliciesName": {
+            "defaultValue": "Default",
+            "type": "String"
+        },
+        "firewallRulesName": 
+        {
+            "defaultValue": "AllowAllAzureIPs",
+            "type": "String"
+        },
+        "databaseName": 
+        {
+            "defaultValue": "DotNetAppSqlDb20180208050232_db",
+            "type": "String"
+        },
+        "backupLongTermRetentionVaults_RegisteredVault_name": 
+        {
+            "defaultValue": "RegisteredVault",
+            "type": "String"
+        },
+        "firewallRules_ClientIPAddress_2018_02_08_02:17:34_name": 
+        {
+            "defaultValue": "ClientIPAddress_2018-02-08_02:17:34",
+            "type": "String"
+        },
+        "appHostName": 
+        {
+            "defaultValue": "dotnetappsqldb20180208050232.azurewebsites.net",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": 
+    [
+        {
+            "type": "Microsoft.Sql/servers",
+            "kind": "v12.0",
+            "name": "[concat(parameters('appName'), 'server')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[parameters('location')]",
+            "scale": null,
+            "properties": 
+            {
+                "administratorLogin": "naliaksandra",
+                "version": "12.0"
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "sku": 
+            {
+                "name": "S1",
+                "tier": "Standard",
+                "size": "S1",
+                "family": "S",
+                "capacity": 1
+            },
+            "kind": "app",
+            "name": "[parameters('appServicePlanName')]",
+            "apiVersion": "2016-09-01",
+            "location": "[parameters('location')]",
+            "scale": null,
+            "properties": 
+            {
+                "name": "[parameters('appServicePlanName')]",
+                "workerTierName": null,
+                "adminSiteName": null,
+                "hostingEnvironmentProfile": null,
+                "perSiteScaling": false,
+                "reserved": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "kind": "app",
+            "name": "[parameters('appName')]",
+            "apiVersion": "2016-08-01",
+            "location": "[parameters('location')]",
+            "scale": null,
+            "properties": 
+            {
+                "enabled": true,
+                "hostNameSslStates": 
+                [
+                    {
+                        "name": "[concat(parameters('appName'),'.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "virtualIP": null,
+                        "thumbprint": null,
+                        "toUpdate": null,
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('appName'),'.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "virtualIP": null,
+                        "thumbprint": null,
+                        "toUpdate": null,
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+                "reserved": false,
+                "siteConfig": null,
+                "scmSiteAlsoStopped": false,
+                "hostingEnvironmentProfile": null,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "hostNamesDisabled": false,
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "cloningInfo": null
+            },
+            "resources": 
+            [
+                {
+                  "apiVersion": "2015-08-01",
+                  "name": "web",
+                  "type": "sourcecontrols",
+                  "dependsOn": 
+                  [
+                    "[resourceId('Microsoft.Web/sites', parameters('appName'))]"
+                  ],
+                  "properties": 
+                  {
+                    "RepoUrl": "[parameters('repoURL')]",
+                    "branch": "master",
+                    "IsManualIntegration": true
+                  }
+                }
+            ],
+            "dependsOn": 
+            [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/auditingPolicies",
+            "name": "[concat(concat(parameters('appName'), 'server'), '/', parameters('auditingPoliciesName'))]",
+            "apiVersion": "2014-04-01",
+            "location": "[parameters('location')]",
+            "scale": null,
+            "properties": 
+            {
+                "auditingState": "New",
+                "eventTypesToAudit": "PlainSQL_Success,PlainSQL_Failure,ParameterizedSQL_Success,ParameterizedSQL_Failure,StoredProcedure_Success,StoredProcedure_Failure,Login_Success,Login_Failure,TransactionManagement_Success,TransactionManagement_Failure",
+                "storageAccountName": null,
+                "storageAccountKey": null,
+                "storageAccountSecondaryKey": null,
+                "storageTableEndpoint": null,
+                "storageAccountResourceGroupName": null,
+                "storageAccountSubscriptionId": null,
+                "fullAuditLogsTableName": "[concat('SQLDBAuditLogs' , concat(parameters('appName'), 'server'))]",
+                "auditLogsTableName": "concat(parameters('appName'), 'server')",
+                "retentionDays": "0"
+            },
+            "dependsOn": 
+            [
+                "[resourceId('Microsoft.Sql/servers', concat(parameters('appName'), 'server'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/backupLongTermRetentionVaults",
+            "name": "[concat(concat(parameters('appName'), 'server'), '/', parameters('backupLongTermRetentionVaults_RegisteredVault_name'))]",
+            "apiVersion": "2014-04-01",
+            "location": "[parameters('location')]",
+            "scale": null,
+            "properties": {
+                "recoveryServicesVaultResourceId": null
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', concat(parameters('appName'), 'server'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "kind": "v12.0,user",
+            "name": "[concat(concat(parameters('appName'), 'server'), '/', parameters('databaseName'))]",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[parameters('location')]",
+            "scale": null,
+            "properties": 
+            {
+                "databaseId": "b061ab2f-a446-4474-b82c-29c890be19aa",
+                "edition": "Standard",
+                "status": "Online",
+                "serviceLevelObjective": "S0",
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": "1073741824",
+                "creationDate": "2018-02-08T14:05:04.85Z",
+                "currentServiceObjectiveId": "f1173c43-91bd-4aaa-973c-54e79e15235b",
+                "requestedServiceObjectiveId": "f1173c43-91bd-4aaa-973c-54e79e15235b",
+                "requestedServiceObjectiveName": "S0",
+                "sampleName": null,
+                "defaultSecondaryLocation": "East US 2",
+                "earliestRestoreDate": "2018-02-08T14:35:40.153Z",
+                "elasticPoolName": null,
+                "containmentState": 2,
+                "readScale": "Disabled",
+                "failoverGroupId": null,
+                "zoneRedundant": false,
+                "isUpgradeRequested": false
+            },
+            "dependsOn": 
+            [
+                "[resourceId('Microsoft.Sql/servers', concat(parameters('appName'), 'server'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "kind": "v12.0,system",
+            "name": "[concat(concat(parameters('appName'), 'server'), '/master')]",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[parameters('location')]",
+            "scale": null,
+            "properties": 
+            {
+                "databaseId": "69f1e5aa-9fa6-4688-b682-07d20b7a4346",
+                "edition": "System",
+                "status": "Online",
+                "serviceLevelObjective": "System0",
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": "32212254720",
+                "creationDate": "2018-02-08T14:04:37.207Z",
+                "currentServiceObjectiveId": "29dd7459-4a7c-4e56-be22-f0adda49440d",
+                "requestedServiceObjectiveId": "29dd7459-4a7c-4e56-be22-f0adda49440d",
+                "requestedServiceObjectiveName": "System0",
+                "sampleName": null,
+                "defaultSecondaryLocation": "East US 2",
+                "earliestRestoreDate": null,
+                "elasticPoolName": null,
+                "containmentState": 2,
+                "readScale": "Disabled",
+                "failoverGroupId": null,
+                "zoneRedundant": false,
+                "isUpgradeRequested": false
+            },
+            "dependsOn": 
+            [
+                "[resourceId('Microsoft.Sql/servers', concat(parameters('appName'), 'server'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "kind": "v12.0",
+            "name": "[concat(concat(parameters('appName'), 'server'), '/', parameters('firewallRulesName'))]",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[parameters('location')]",
+            "scale": null,
+            "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "0.0.0.0"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', concat(parameters('appName'), 'server'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "kind": "v12.0",
+            "name": "[concat(concat(parameters('appName'), 'server'), '/', parameters('firewallRules_ClientIPAddress_2018_02_08_02:17:34_name'))]",
+            "apiVersion": "2014-04-01-preview",
+            "location": "[parameters('location')]",
+            "scale": null,
+            "properties": {
+                "startIpAddress": "194.158.197.0",
+                "endIpAddress": "194.158.197.0"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', concat(parameters('appName'), 'server'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/keys",
+            "kind": "servicemanaged",
+            "name": "[concat(concat(parameters('appName'), 'server'), '/', parameters('keys_ServiceManaged_name'))]",
+            "apiVersion": "2015-05-01-preview",
+            "scale": null,
+            "properties": {
+                "serverKeyType": "[parameters('keys_ServiceManaged_name')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', concat(parameters('appName'), 'server'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "name": "[concat(parameters('appName'), '/', parameters('webConfigName'))]",
+            "apiVersion": "2016-08-01",
+            "location": "[parameters('location')]",
+            "tags": {
+                "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]": "Resource",
+                "displayName": "SQLWebApp"
+            },
+            "scale": null,
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "phpVersion": "5.6",
+                "pythonVersion": "",
+                "nodeVersion": "",
+                "linuxFxVersion": "",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": null,
+                "httpLoggingEnabled": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "[concat('$', parameters('appName'))]",
+                "publishingPassword": null,
+                "appSettings": null,
+                "metadata": null,
+                "connectionStrings": null,
+                "machineKey": null,
+                "handlerMappings": null,
+                "documentRoot": null,
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "javaVersion": null,
+                "javaContainer": null,
+                "javaContainerVersion": null,
+                "appCommandLine": "",
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false,
+                        "virtualDirectories": null
+                    }
+                ],
+                "winAuthAdminState": 0,
+                "winAuthTenantState": 0,
+                "customAppPoolIdentityAdminState": false,
+                "customAppPoolIdentityTenantState": false,
+                "runtimeADUser": null,
+                "runtimeADUserPassword": null,
+                "loadBalancing": "LeastRequests",
+                "routingRules": [],
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "limits": null,
+                "autoHealEnabled": false,
+                "autoHealRules": null,
+                "tracingOptions": null,
+                "vnetName": "",
+                "siteAuthEnabled": false,
+                "siteAuthSettings": {
+                    "enabled": null,
+                    "unauthenticatedClientAction": null,
+                    "tokenStoreEnabled": null,
+                    "allowedExternalRedirectUrls": null,
+                    "defaultProvider": null,
+                    "clientId": null,
+                    "clientSecret": null,
+                    "issuer": null,
+                    "allowedAudiences": null,
+                    "additionalLoginParams": null,
+                    "isAadAutoProvisioned": false,
+                    "googleClientId": null,
+                    "googleClientSecret": null,
+                    "googleOAuthScopes": null,
+                    "facebookAppId": null,
+                    "facebookAppSecret": null,
+                    "facebookOAuthScopes": null,
+                    "twitterConsumerKey": null,
+                    "twitterConsumerSecret": null,
+                    "microsoftAccountClientId": null,
+                    "microsoftAccountClientSecret": null,
+                    "microsoftAccountOAuthScopes": null
+                },
+                "cors": null,
+                "push": null,
+                "apiDefinition": null,
+                "autoSwapSlotName": null,
+                "localMySqlEnabled": false,
+                "managedServiceIdentityId": null,
+                "ipSecurityRestrictions": null
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('appName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "name": "[concat(parameters('appName'), '/', parameters('appHostName'))]",
+            "apiVersion": "2016-08-01",
+            "location": "[parameters('location')]",
+            "scale": null,
+            "properties": {
+                "siteName": "[parameters('appName')]",
+                "domainId": null,
+                "hostNameType": "Verified"
+            },
+            "dependsOn": 
+            [
+                "[resourceId('Microsoft.Web/sites', parameters('appName'))]"
+            ]
+        }
+    ]
+}
