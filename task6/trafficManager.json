@@ -1,0 +1,128 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "0.6",
+    "parameters": 
+    {
+        "location1":
+        {
+            "type": "string"
+        },
+        "location2":
+        {
+            "type": "string"
+        },
+        "appName1": 
+        {
+            "type": "string"
+        },
+        "appName2": 
+        {
+            "type": "string"
+        },
+        "trafficManagerName": 
+        {
+            "type": "string"
+        },
+        "azureEndpoint1":
+        {
+            "type": "string"
+        },
+        "externalEndpoint1":
+        {
+            "type": "string"
+        },
+        "azureEndpoint2":
+        {
+            "type": "string"
+        },
+        "externalEndpoint2":
+        {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": 
+    [
+        {
+            "type": "Microsoft.Network/trafficmanagerprofiles",
+            "name": "[parameters('trafficManagerName')]",
+            "apiVersion": "2017-05-01",
+            "location": "global",
+            "tags": {},
+            "scale": null,
+            "properties": 
+            {
+                "profileStatus": "Enabled",
+                "trafficRoutingMethod": "Performance",
+                "dnsConfig": 
+                {
+                    "relativeName": "[parameters('trafficManagerName')]",
+                    "fqdn": "[concat(parameters('trafficManagerName'),'.trafficmanager.net')]",
+                    "ttl": 300
+                },
+                "monitorConfig": 
+                {
+                    "protocol": "HTTP",
+                    "port": 80,
+                    "path": "/",
+                    "intervalInSeconds": 30,
+                    "toleratedNumberOfFailures": 3,
+                    "timeoutInSeconds": 10
+                },
+                "endpoints": 
+                [
+                    {
+                        "name": "[parameters('azureEndpoint1')]",
+                        "type": "Microsoft.Network/trafficmanagerprofiles/azureEndpoints",
+                        "properties": 
+                        {
+                            "endpointStatus": "Enabled",
+                            "targetResourceId": "[resourceId('Microsoft.Web/sites', parameters('appName1'))]",
+                            "target": "[concat(parameters('appName1'), '.azurewebsites.net')]",
+                            "weight": 1,
+                            "priority": 1,
+                            "endpointLocation": "[parameters('location1')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('externalEndpoint1')]",
+                        "type": "Microsoft.Network/trafficmanagerprofiles/externalEndpoints",
+                        "properties": 
+                        {
+                            "endpointStatus": "Enabled",
+                            "target": "[parameters('externalEndpoint1')]",
+                            "weight": 1,
+                            "priority": 3,
+                            "endpointLocation": "[parameters('location1')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('azureEndpoint2')]",
+                        "type": "Microsoft.Network/trafficmanagerprofiles/azureEndpoints",
+                        "properties": 
+                        {
+                            "endpointStatus": "Enabled",
+                            "targetResourceId": "[resourceId('Microsoft.Web/sites', parameters('appName2'))]",
+                            "target": "[concat(parameters('appName2'), '.azurewebsites.net')]",
+                            "weight": 1,
+                            "priority": 2,
+                            "endpointLocation": "[parameters('location2')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('externalEndpoint2')]",
+                        "type": "Microsoft.Network/trafficmanagerprofiles/externalEndpoints",
+                        "properties": 
+                        {
+                            "endpointStatus": "Enabled",
+                            "target": "[parameters('externalEndpoint2')]",
+                            "weight": 1,
+                            "priority": 4,
+                            "endpointLocation": "[parameters('location2')]"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,88 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#", 
+    "contentVersion": "0.6",
+    "parameters": 
+    {
+        "sas":
+        {
+            "type": "string"
+        },
+        "appServicePlan": 
+        {
+            "type": "string"
+        },
+        "location":
+        {
+            "type": "string"
+        },
+        "appName": 
+        {
+            "type": "string"
+        },
+        "trafficManagerName": 
+        {
+            "type": "string"
+        },
+        "webConfigName": 
+        {
+            "type": "string"
+        },
+        "appHostName": 
+        {
+            "type": "string"
+        },
+        "repoURL": 
+        {
+            "type": "string",
+            "defaultValue": "https://github.com/Usagich/testApp.git"
+        }
+    },
+    "resources": 
+    [
+        {
+            "name": "creatingVaults",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "properties": 
+            {
+                "mode": "incremental",
+                "templateLink": 
+                {
+                  "uri":"[concat('https://naliaksandra.blob.core.windows.net/templates/apps6.json', parameters('sas'))]",
+                  "contentVersion":"0.6"
+                },
+               "parameters": 
+               {
+                   "appServicePlan": 
+                   {
+                       "value": "[parameters('appServicePlan')]"
+                   },
+                   "location":
+                   {
+                        "value": "[parameters('location')]"
+                   },
+                   "appName": 
+                   {
+                        "value": "[parameters('appName')]"
+                   },
+                   "trafficManagerName": 
+                   {
+                        "value": "[parameters('trafficManagerName')]"
+                   },
+                   "webConfigName": 
+                   {
+                        "value": "[parameters('webConfigName')]"
+                   },
+                   "appHostName": 
+                   {
+                        "value": "[parameters('appHostName')]"
+                   },
+                   "repoURL": 
+                    {
+                        "value": "[parameters('repoURL')]"
+                    }
+               }
+            }
+        }
+    ]
+}
