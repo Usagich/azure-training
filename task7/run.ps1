@@ -122,7 +122,7 @@ foreach ($blob in $blobList)
 Start-AzureStorageBlobCopy -SrcContainer $diskContainer -DestContainer vhd -SrcBlob $blobName -DestBlob $diskName -Context $storageContext -DestContext $storageContext 
 ##deleting old container
 Remove-AzureStorageContainer -Name $diskContainer -Force -Context $storageContext
-Remove-AzureStorageBlob -Container $diskContainer -Context $storageContext -Blob $blobName 
+#Remove-AzureStorageBlob -Container $diskContainer -Context $storageContext -Blob $blobName 
 Remove-Item temp.txt
 Remove-Item $destinationPath
  
