@@ -1,5 +1,5 @@
 ﻿Login-AzureRmAccount
-Set-AzureRmContext -SubscriptionId "b1d40bc1-2977-4394-b374-fe62498046e2" 
+Set-AzureRmContext -SubscriptionId "" 
 
 
 New-AzureRmResourceGroup -Name task3RG -Location "West Europe"
